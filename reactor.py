@@ -40,3 +40,4 @@ class Event:
     def __str__(self):
         return f'{self.data} {self.__dict__}'
 
+R = Reactor()
