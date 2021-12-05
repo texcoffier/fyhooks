@@ -30,13 +30,18 @@ def _start(event:reactor.Event):
             while True:
                 R('timer')
                 time.sleep(5)
-    R('print', 'start threads')
+    R('print', '''
+    Commands:
+       VARNAME=value        # Affectation
+       EXPRESSION           # Evaluate expression and print it
+       p                    # Dump the model
+''')
     Timer().start()
     StdinReader().start()
 
 @R.handler('print')
 def _print(event:reactor.Event):
-    print('print', event.data[1])
+    print(event.data[1])
 
 @R.handler('dump')
 def _dump(event:reactor.Event):
@@ -60,8 +65,9 @@ def _calc(event:reactor.Event):
 def _set(event:reactor.Event):
     try:
         var, val = event.data[1].split('=', 1)
-        M.variables[var] = eval(val)
-        R('dump')
+        val = eval(val, None, M.variables)
+        M.variables[var] = val
+        R('print', f'{var}={val}')
         return True
     except:
         pass
