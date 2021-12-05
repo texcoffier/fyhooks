@@ -4,6 +4,7 @@ import sys
 import threading
 import time
 import reactor
+import http.server
 
 R = reactor.Reactor()
 class Model:
@@ -29,15 +30,26 @@ def _start(event:reactor.Event):
         def run(self):
             while True:
                 R('timer')
-                time.sleep(5)
-    R('print', '''
-    Commands:
-       VARNAME=value        # Affectation
-       EXPRESSION           # Evaluate expression and print it
-       p                    # Dump the model
+                time.sleep(10)
+
+    class HTTPHandler(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            R("get", self)
+
+    class HTTP(threading.Thread):
+        def run(self):
+            http.server.HTTPServer(('127.0.0.1', 8888), HTTPHandler).serve_forever()
+
+    R('print', '''Commands:
+  VARNAME=value # Affectation
+  EXPRESSION    # Evaluate expression and print it
+  p             # Dump the model
+
+Server waiting on http://127.0.0.1:8888/command
 ''')
     Timer().start()
     StdinReader().start()
+    HTTP().start()
 
 @R.handler('print')
 def _print(event:reactor.Event):
@@ -45,8 +57,10 @@ def _print(event:reactor.Event):
 
 @R.handler('dump')
 def _dump(event:reactor.Event):
-    R('print', str(M))
+    result = str(M)
+    R('print', result)
     M.history.pop()
+    return result
 
 @R.handler('timer')
 def _timer(event:reactor.Event):
@@ -57,7 +71,7 @@ def _calc(event:reactor.Event):
     try:
         result = eval(event.data[1], {}, M.variables)
         R('print', str(result))
-        return True
+        return result
     except:
         pass
 
@@ -67,16 +81,29 @@ def _set(event:reactor.Event):
         var, val = event.data[1].split('=', 1)
         val = eval(val, None, M.variables)
         M.variables[var] = val
-        R('print', f'{var}={val}')
-        return True
+        result = f'{var}={val}'
+        R('print', result)
+        return  result
     except:
         pass
 
+@R.handler('reply')
+def _reply(event:reactor.Event):
+    server = event.data[1]
+    server.send_response(200)
+    server.end_headers()
+    server.wfile.write(str(event.data[2]).encode('utf-8'))
+
+@R.handler('get')
+def _get(event:reactor.Event):
+    server = event.data[1]
+    result = R('stdin', server.path[1:])
+    R('reply', server, result)
+
 @R.handler('stdin')
 def _do_dump(event:reactor.Event):
-    if event.data[1] == 'p\n':
-        R('dump')
-        return True
+    if event.data[1].strip() == 'p':
+        return R('dump')
 
 @R.handler('', 'A')
 def _record(event:reactor.Event):

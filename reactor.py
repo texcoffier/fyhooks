@@ -20,8 +20,9 @@ class Reactor:
     def __call__(self, *data):
         event = Event(data)
         for handler in self.sorted_handlers.get(data[0], []):
-            if handler(event):
-                break
+            result = handler(event)
+            if result:
+                return result
 
     def handler(self, event_type:EventType, priority:Priority = 'MMMMM'):
         def handler(function):
