@@ -1,9 +1,12 @@
-#!/usr/bin/python3
+"""
+Debugger
+"""
 
 from reactor import R
 
 @R.handler('dump')
-def dump(event):
+def dump(_event):
+    """Manage the dump event and returns the dump"""
     result = str(R.M)
     R('print', result)
     R.M.history.pop()
@@ -11,10 +14,13 @@ def dump(event):
 
 @R.handler('stdin')
 def do_dump(event):
+    """If it is the dump command do it, and returns
+    then dump to stop event propagation"""
     if event.data[1].strip() == 'p':
         return R('dump')
+    return None
 
 @R.handler('help')
-def help(event):
+def print_help(_event):
+    "help"
     R('print', '  p : display model dump')
-
