@@ -29,3 +29,7 @@ def _get(event):
     result = R('stdin', server.path[1:])
     R('reply', server, result)
 
+@R.handler('help')
+def _print(event):
+    R('print', 'Server waiting on http://127.0.0.1:8888/command')
+
