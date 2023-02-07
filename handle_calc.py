@@ -16,4 +16,10 @@ def calc(args):
 @R.handler('help')
 def print_help(args):
     "help"
-    args[1].append('  EXPRESSION : print the evaluation result')
+    args[1].append('  EXPRESSION : [[[calc_help]]]')
+
+@R.handler('translations')
+def translations(args):
+    "Translations"
+    args[1]['en']['calc_help'] = "print the evaluation result"
+    args[1]['fr']['calc_help'] = "affiche le résultat de l'évaluation"

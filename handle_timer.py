@@ -26,4 +26,10 @@ def _timer(_args):
 @R.handler('help', 'X')
 def print_help(args):
     "help"
-    args[1].append('A timer will display a message every 10 seconds')
+    args[1].append('[[[timer_help]]]')
+
+@R.handler('translations')
+def translations(args):
+    "Translations"
+    args[1]['en']['timer_help'] = "A timer will display a message every 10 seconds"
+    args[1]['fr']['timer_help'] = "Une tâche périodique affiche un message toutes les 10 secondes"

@@ -30,6 +30,7 @@ def do_reload(args):
     for module, must_reload in to_reload.items():
         if must_reload:
             importlib.reload(sys.modules[module])
+    R('RELOAD')
     return 'Reloaded: ' + ' '.join(module
                                    for module, must_reload in to_reload.items()
                                    if must_reload)
@@ -37,4 +38,10 @@ def do_reload(args):
 @R.handler('help', 'C2')
 def print_help(args):
     "help"
-    args[1].append('  r : reload modified Python modules')
+    args[1].append('  r : [[[reload_help]]]')
+
+@R.handler('translations')
+def translations(args):
+    "Translations"
+    args[1]['en']['reload_help'] = "reload modified Python modules"
+    args[1]['fr']['reload_help'] = "reactualise les modules Python qui ont été modifiés"

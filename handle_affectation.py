@@ -19,4 +19,10 @@ def set_var(args):
 @R.handler('help')
 def print_help(args):
     "Help"
-    args[1].append('  VARNAME=EXPRESSION : Evaluate the expression, store it and display it')
+    args[1].append('  VARNAME=EXPRESSION [[[affectation_help]]]')
+
+@R.handler('translations')
+def translations(args):
+    "Translations"
+    args[1]['en']['affectation_help'] = "Evaluate the expression, store it and display it"
+    args[1]['fr']['affectation_help'] = "Évalue l'expression et l'enregistre dans la variable"

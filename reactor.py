@@ -29,6 +29,7 @@ class Reactor:
 
     def __call__(self, *args) -> Any:
         """Send event"""
+        args = list(args)
         for handler in self.sorted_handlers.get(args[0], ()):
             result = handler(args)
             if result is not None:

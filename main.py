@@ -11,6 +11,7 @@ import handle_calc
 import handle_affectation
 import handle_dump
 import handle_reload
+import handle_translations
 import handle_timer
 import handle_http
 
@@ -35,4 +36,5 @@ def _record(args):
     """Record all event"""
     R.M.history.append(str(args))
 
+R('INIT') # For translations
 R('START')

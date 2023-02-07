@@ -22,4 +22,10 @@ def do_dump(args):
 @R.handler('help', 'C2')
 def print_help(args):
     "help"
-    args[1].append('  p : display model dump')
+    args[1].append('  p : [[[dump_help]]]')
+
+@R.handler('translations')
+def translations(args):
+    "Translations"
+    args[1]['en']['dump_help'] = "display model dump"
+    args[1]['fr']['dump_help'] = "affiche les structures de données de l'application"

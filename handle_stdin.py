@@ -16,7 +16,7 @@ def _start(_args):
             """Send 'eval' event on line read"""
             for line in sys.stdin:
                 R('print', R('eval', line))
-    R('print', "'h' to print help.")
+    R('print', "[[[stdin_start]]]")
     StdinReader().start()
 
 @R.handler('print')
@@ -29,9 +29,20 @@ def _timer(_args):
     """Action on timer event"""
     time = R.M.variables.get("T", 0)
     if time:
-        R('print', f'Time event T={time}')
+        R('print', f'[[[stdin_timer]]] T={time}')
 
 @R.handler('eval', 'Z')
 def syntax_error(_args):
     """If execution is here, nothing has been reconized"""
-    return "SYNTAX ERROR"
+    return "[[[stdin_error]]]"
+
+@R.handler('translations')
+def translations(args):
+    "Translations"
+    args[1]['en']['stdin_error'] = "SYNTAX ERROR"
+    args[1]['fr']['stdin_error'] = "ERREUR DE SYNTAXE"
+    args[1]['en']['stdin_timer'] = "Timer event"
+    args[1]['fr']['stdin_timer'] = "Événement périodique"
+    args[1]['en']['stdin_start'] = "Hit 'h' <enter> to print help."
+    args[1]['fr']['stdin_start'] = "Tapez 'h' puis Entrée pour afficher l'aide."
+

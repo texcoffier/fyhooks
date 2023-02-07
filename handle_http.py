@@ -29,6 +29,7 @@ def _reply(args):
     server = args[1]
     server.send_response(200)
     server.end_headers()
+    server.wfile.write(b'<!DOCTYPE html>\n<meta charset="utf-8"><pre>')
     server.wfile.write(str(args[2]).encode('utf-8'))
 
 @R.handler('get')
@@ -41,4 +42,10 @@ def _get(args):
 @R.handler('help', 'T')
 def print_help(args):
     "help"
-    args[1].append('Server waiting on http://127.0.0.1:8888/command')
+    args[1].append('[[[http_start]]] http://127.0.0.1:8888/command')
+
+@R.handler('translations')
+def translations(args):
+    "Translations"
+    args[1]['en']['http_start'] = "Server waiting on"
+    args[1]['fr']['http_start'] = "Le serveur web est en attente à l'adresse"
