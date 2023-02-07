@@ -13,9 +13,9 @@ def _start(_args):
     class StdinReader(threading.Thread):
         """Thread reading the stdin"""
         def run(self):
-            """Send 'stdin' event on line read"""
+            """Send 'eval' event on line read"""
             for line in sys.stdin:
-                R('print', R('stdin', line))
+                R('print', R('eval', line))
     R('print', "'h' to print help.")
     StdinReader().start()
 
@@ -31,7 +31,7 @@ def _timer(_args):
     if time:
         R('print', f'Time event T={time}')
 
-@R.handler('stdin', 'Z')
+@R.handler('eval', 'Z')
 def syntax_error(_args):
     """If execution is here, nothing has been reconized"""
     return "SYNTAX ERROR"

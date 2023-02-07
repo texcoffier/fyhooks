@@ -35,7 +35,7 @@ def _reply(args):
 def _get(args):
     """Manage the HTTP get"""
     server = args[1]
-    result = R('stdin', server.path[1:])
+    result = R('eval', server.path[1:])
     R('reply', server, result)
 
 @R.handler('help')

@@ -4,7 +4,7 @@ Affection handler
 
 from reactor import R
 
-@R.handler('stdin')
+@R.handler('eval')
 def set_var(args):
     """If the affection is possible, set the variable in the model
     and stop the event propagation by returning the new variable value"""

@@ -4,7 +4,7 @@ Expression evaluator
 
 from reactor import R
 
-@R.handler('stdin')
+@R.handler('eval')
 def calc(args):
     """Evaluate the expression and returns it.
     If there is no error, stop the event and return the value."""

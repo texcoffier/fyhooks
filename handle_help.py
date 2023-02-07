@@ -4,7 +4,7 @@ Display help
 
 from reactor import R
 
-@R.handler('stdin')
+@R.handler('eval')
 def do_dump(args):
     """If it is the help command, return it to stop propagation"""
     if args[1].strip() == 'h':

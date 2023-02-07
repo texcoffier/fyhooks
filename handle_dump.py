@@ -11,7 +11,7 @@ def dump(_args):
     R.M.history.pop()
     return result
 
-@R.handler('stdin')
+@R.handler('eval')
 def do_dump(args):
     """If it is the dump command do it, and returns
     then dump to stop event propagation"""
