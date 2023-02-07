@@ -27,4 +27,11 @@ def _print(event):
 @R.handler('timer')
 def _timer(_event):
     """Action on timer event"""
-    R('print', f'Time event T={R.M.variables.get("T", 0) }')
+    time = R.M.variables.get("T", 0)
+    if time:
+        R('print', f'Time event T={time}')
+
+@R.handler('stdin', 'Z')
+def syntax_error(_event):
+    """If execution is here, nothing has been reconized"""
+    return "SYNTAX ERROR"
