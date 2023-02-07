@@ -2,20 +2,20 @@
 The reactor framework.
 """
 
-from typing import Dict, List, Tuple, Callable
+from typing import Dict, List, Tuple, Callable, Any
 
 EventType = str
-EventHandler = Callable # pylint: disable=invalid-name
+EventHandler = Callable[[Tuple], Any] # pylint: disable=invalid-name
 Priority = str
 
 class Reactor:
     """Manage handlers"""
-    M = None
+    M:Any = None
     def __init__(self):
-        self.handlers: Dict[EventType, List[Tuple[Priority, EventHandler]]] = {}
+        self.handlers: Dict[EventType, List[Tuple[Priority, int, EventHandler]]] = {}
         self.sorted_handlers: Dict[EventType, List[EventHandler]] = {}
 
-    def add(self, event_type: EventType, handler: EventHandler, priority: Priority):
+    def add(self, event_type: EventType, handler: EventHandler, priority: Priority) -> None:
         """Add an handler"""
         if event_type not in self.handlers:
             self.handlers[event_type] = []
@@ -24,7 +24,7 @@ class Reactor:
         handlers.sort()
         self.sorted_handlers[event_type] = [handler[2] for handler in handlers]
 
-    def __call__(self, *args):
+    def __call__(self, *args) -> Any:
         """Send event"""
         for handler in self.sorted_handlers.get(args[0], ()):
             result = handler(args)
@@ -32,11 +32,12 @@ class Reactor:
                 return result
         return None
 
-    def handler(self, event_type: EventType, priority: Priority = 'MEDIUM'):
+    def handler(self, event_type: EventType, priority: Priority = 'MEDIUM'
+               ) -> Callable[[EventHandler], EventHandler]:
         """Add a hander decorator.
         Event type '' match all existing events.
         """
-        def handler(function):
+        def handler(function:EventHandler):
             if event_type:
                 self.add(event_type, function, priority)
             else:

@@ -6,6 +6,7 @@ Make many things
 
 # pylint: disable=unused-import
 
+from typing import Dict, List, Tuple, Callable, Any
 from reactor import R
 import handle_stdin
 import handle_help
@@ -17,8 +18,8 @@ import handle_http
 
 class Model: # pylint: disable=too-few-public-methods
     """The model"""
-    variables = {}
-    history = []
+    variables:Dict[str, Any] = {}
+    history:List[str] = []
     def __str__(self):
         lines = []
         lines.append(f'\n    model={self.variables}')
