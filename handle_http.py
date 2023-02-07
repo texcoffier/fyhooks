@@ -7,7 +7,7 @@ import http.server
 from reactor import R
 
 @R.handler('START')
-def _start(_event):
+def _start(_args):
     """Launch the thread"""
     class HTTPHandler(http.server.BaseHTTPRequestHandler):
         """Manage client connections"""
@@ -24,21 +24,21 @@ def _start(_event):
     HTTP().start()
 
 @R.handler('reply')
-def _reply(event):
+def _reply(args):
     """Send a response to the client"""
-    server = event.data[1]
+    server = args[1]
     server.send_response(200)
     server.end_headers()
-    server.wfile.write(str(event.data[2]).encode('utf-8'))
+    server.wfile.write(str(args[2]).encode('utf-8'))
 
 @R.handler('get')
-def _get(event):
+def _get(args):
     """Manage the HTTP get"""
-    server = event.data[1]
+    server = args[1]
     result = R('stdin', server.path[1:])
     R('reply', server, result)
 
 @R.handler('help')
-def print_help(event):
+def print_help(args):
     "help"
-    event.data[1].append('Server waiting on http://127.0.0.1:8888/command')
+    args[1].append('Server waiting on http://127.0.0.1:8888/command')

@@ -8,7 +8,7 @@ import threading
 from reactor import R
 
 @R.handler('START')
-def _start(_event):
+def _start(_args):
     """Start the stdin reader"""
     class StdinReader(threading.Thread):
         """Thread reading the stdin"""
@@ -20,18 +20,18 @@ def _start(_event):
     StdinReader().start()
 
 @R.handler('print')
-def _print(event):
+def _print(args):
     """Print on stdout"""
-    print(event.data[1])
+    print(args[1])
 
 @R.handler('timer')
-def _timer(_event):
+def _timer(_args):
     """Action on timer event"""
     time = R.M.variables.get("T", 0)
     if time:
         R('print', f'Time event T={time}')
 
 @R.handler('stdin', 'Z')
-def syntax_error(_event):
+def syntax_error(_args):
     """If execution is here, nothing has been reconized"""
     return "SYNTAX ERROR"

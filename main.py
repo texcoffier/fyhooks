@@ -32,8 +32,8 @@ class Model: # pylint: disable=too-few-public-methods
 R.M = Model() # pylint: disable=invalid-name
 
 @R.handler('', 'A')
-def _record(event):
+def _record(args):
     """Record all event"""
-    R.M.history.append(str(event.data))
+    R.M.history.append(str(args))
 
 R('START')

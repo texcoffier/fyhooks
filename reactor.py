@@ -24,17 +24,18 @@ class Reactor:
         handlers.sort()
         self.sorted_handlers[event_type] = [handler[2] for handler in handlers]
 
-    def __call__(self, *data):
+    def __call__(self, *args):
         """Send event"""
-        event = Event(data)
-        for handler in self.sorted_handlers.get(data[0], []):
-            result = handler(event)
+        for handler in self.sorted_handlers.get(args[0], ()):
+            result = handler(args)
             if result is not None:
                 return result
         return None
 
     def handler(self, event_type: EventType, priority: Priority = 'MEDIUM'):
-        """Add a hander decorator"""
+        """Add a hander decorator.
+        Event type '' match all existing events.
+        """
         def handler(function):
             if event_type:
                 self.add(event_type, function, priority)
@@ -54,12 +55,5 @@ class Reactor:
                 fctname = fct.__code__.co_name
                 text.append(f'    {priority:7}{index:3} {filename:25}{fctname}')
         return '\n'.join(text)
-
-class Event: # pylint: disable=too-few-public-methods
-    """Event"""
-    def __init__(self, data):
-        self.data = data
-    def __str__(self):
-        return f'{self.data} {self.__dict__}'
 
 R = Reactor()

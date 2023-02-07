@@ -7,7 +7,7 @@ import time
 from reactor import R
 
 @R.handler('START')
-def _start(_event):
+def _start(_args):
     """Launch the thread"""
     class Timer(threading.Thread):
         """Start a timer thread"""
@@ -19,11 +19,11 @@ def _start(_event):
     Timer().start()
 
 @R.handler('timer')
-def _timer(_event):
+def _timer(_args):
     """Incremente T variable on each timer event"""
     R.M.variables['T'] = R.M.variables.get('T', 0) + 1
 
 @R.handler('help', 'X')
-def print_help(event):
+def print_help(args):
     "help"
-    event.data[1].append('A timer will display a message every 10 seconds')
+    args[1].append('A timer will display a message every 10 seconds')
