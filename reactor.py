@@ -29,11 +29,11 @@ class Reactor:
         event = Event(data)
         for handler in self.sorted_handlers.get(data[0], []):
             result = handler(event)
-            if result:
+            if result is not None:
                 return result
         return None
 
-    def handler(self, event_type: EventType, priority: Priority = 'MMMMM'):
+    def handler(self, event_type: EventType, priority: Priority = 'MEDIUM'):
         """Add a hander decorator"""
         def handler(function):
             if event_type:
@@ -43,6 +43,17 @@ class Reactor:
                     self.add(event, function, priority)
             return function
         return handler
+
+    def __str__(self):
+        """State"""
+        text = []
+        for key, handlers in self.handlers.items():
+            text.append(key)
+            for priority, index, fct in handlers:
+                filename = fct.__code__.co_filename.split("/")[-1]
+                fctname = fct.__code__.co_name
+                text.append(f'    {priority:7}{index:3} {filename:25}{fctname}')
+        return '\n'.join(text)
 
 class Event: # pylint: disable=too-few-public-methods
     """Event"""

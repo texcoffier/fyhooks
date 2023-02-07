@@ -22,3 +22,8 @@ def _start(_event):
 def _timer(_event):
     """Incremente T variable on each timer event"""
     R.M.variables['T'] = R.M.variables.get('T', 0) + 1
+
+@R.handler('help', 'X')
+def print_help(_event):
+    "help"
+    R('print', 'A timer will display a message every 10 seconds')

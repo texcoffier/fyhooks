@@ -12,11 +12,9 @@ def set_var(event):
         var, val = event.data[1].split('=', 1)
         val = eval(val, None, R.M.variables) # pylint: disable=eval-used
         R.M.variables[var] = val
-        result = f'{var}={val}'
-        R('print', result)
-        return result
+        return val
     except: # pylint: disable=bare-except
-        pass
+        return None
 
 @R.handler('help')
 def print_help(_event):

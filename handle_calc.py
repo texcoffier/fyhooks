@@ -6,14 +6,12 @@ from reactor import R
 
 @R.handler('stdin')
 def calc(event):
-    """Evaluate the expression and print it.
+    """Evaluate the expression and returns it.
     If there is no error, stop the event and return the value."""
     try:
-        result = eval(event.data[1], {}, R.M.variables) # pylint: disable=eval-used
-        R('print', str(result))
-        return result
+        return eval(event.data[1], {}, R.M.variables) # pylint: disable=eval-used
     except: # pylint: disable=bare-except
-        pass
+        return None # For example if affectation
 
 @R.handler('help')
 def print_help(_event):

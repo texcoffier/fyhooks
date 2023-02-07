@@ -8,7 +8,6 @@ from reactor import R
 def dump(_event):
     """Manage the dump event and returns the dump"""
     result = str(R.M)
-    R('print', result)
     R.M.history.pop()
     return result
 
