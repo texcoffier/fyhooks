@@ -16,7 +16,7 @@ def replace(group):
 @R.handler('print', 'B')
 def translate(args):
     """Translate"""
-    args[1] = re.sub(r'\[\[\[([^]]*)]]]', replace, args[1])
+    args[1] = re.sub(r'\[\[\[([^]]*)]]]', replace, str(args[1]))
 
 @R.handler('INIT')
 def _start(_args):
@@ -41,4 +41,12 @@ def translations(args):
 @R.handler('reply', 'A')
 def _reply(args):
     """Translate the HTTP answer"""
-    args[2] = re.sub(r'\[\[\[([^]]*)]]]', replace, args[2])
+    args[2] = re.sub(r'\[\[\[([^]]*)]]]', replace, str(args[2]))
+
+@R.handler('informations')
+def _informations(args):
+    """Dump some informations"""
+    for lang, messages in TRANSLATIONS.items():
+        args[1].append(f'  ======== {lang} ========\n')
+        for key, msg in sorted(messages.items()):
+            args[1].append(f'    {key:20} {msg.strip()[:40]}\n')

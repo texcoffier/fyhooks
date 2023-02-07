@@ -42,10 +42,12 @@ def _get(args):
 @R.handler('help', 'T')
 def print_help(args):
     "help"
-    args[1].append('[[[http_start]]] http://127.0.0.1:8888/command')
+    args[1].append('[[[http_start]]] http://127.0.0.1:8888/[[[http_command]]]')
 
 @R.handler('translations')
 def translations(args):
     "Translations"
     args[1]['en']['http_start'] = "Server waiting on"
     args[1]['fr']['http_start'] = "Le serveur web est en attente à l'adresse"
+    args[1]['en']['http_command'] = "command-as-with-the-keyboard"
+    args[1]['fr']['http_command'] = "une-commande-comme-au-clavier"

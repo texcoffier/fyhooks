@@ -21,20 +21,21 @@ class Model: # pylint: disable=too-few-public-methods
     history:List[str] = []
     def __str__(self):
         lines = []
-        lines.append(f'\n    model={self.variables}')
-        lines.append('\n    history')
+        lines.append(f'    model={self.variables}\n')
+        lines.append('    history\n')
         for history in self.history:
-            lines.append(f'\n        {history[:100]}')
-        lines.append('\n    reactor')
+            lines.append(f'        {history[:100].replace("[[[", "[")}\n')
+        lines.append('    reactor\n')
         for line in str(R).split('\n'):
-            lines.append(f'\n        {line}')
+            lines.append(f'        {line}\n')
+        R('informations', lines)
         return ''.join(lines)
 R.M = Model() # pylint: disable=invalid-name
 
 @R.handler('', 'A')
 def _record(args):
     """Record all event"""
-    R.M.history.append(str(args))
+    R.M.history.append(repr(args))
 
-R('INIT') # For translations
+R('INIT') # For translations because they are needed before START
 R('START')
