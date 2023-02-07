@@ -39,6 +39,6 @@ def _get(event):
     R('reply', server, result)
 
 @R.handler('help')
-def _print(_event):
+def _print(event):
     "help"
-    R('print', 'Server waiting on http://127.0.0.1:8888/command')
+    event.data[1].append('Server waiting on http://127.0.0.1:8888/command')

@@ -20,6 +20,6 @@ def do_dump(event):
     return None
 
 @R.handler('help')
-def print_help(_event):
+def print_help(event):
     "help"
-    R('print', '  p : display model dump')
+    event.data[1].append('  p : display model dump')

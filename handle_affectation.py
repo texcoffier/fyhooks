@@ -17,6 +17,6 @@ def set_var(event):
         return None
 
 @R.handler('help')
-def print_help(_event):
+def print_help(event):
     "Help"
-    R('print', '  VARNAME=EXPRESSION : Evaluate the expression, store it and display it')
+    event.data[1].append('  VARNAME=EXPRESSION : Evaluate the expression, store it and display it')

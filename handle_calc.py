@@ -14,6 +14,6 @@ def calc(event):
         return None # For example if affectation
 
 @R.handler('help')
-def print_help(_event):
+def print_help(event):
     "help"
-    R('print', '  EXPRESSION : print the evaluation result')
+    event.data[1].append('  EXPRESSION : print the evaluation result')

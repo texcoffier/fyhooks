@@ -9,10 +9,11 @@ Make many things
 import sys
 import threading
 from reactor import R
-import handle_timer
+import handle_help
 import handle_calc
 import handle_affectation
 import handle_dump
+import handle_timer
 import handle_http
 
 class Model: # pylint: disable=too-few-public-methods
@@ -40,8 +41,7 @@ def _start(_event):
             """Send 'stdin' event on line read"""
             for line in sys.stdin:
                 R('print', R('stdin', line))
-    R('print', 'Commands:')
-    R('help')
+    R('print', "'h' to print help.")
     StdinReader().start()
 
 @R.handler('print')

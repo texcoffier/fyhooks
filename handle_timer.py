@@ -24,6 +24,6 @@ def _timer(_event):
     R.M.variables['T'] = R.M.variables.get('T', 0) + 1
 
 @R.handler('help', 'X')
-def print_help(_event):
+def print_help(event):
     "help"
-    R('print', 'A timer will display a message every 10 seconds')
+    event.data[1].append('A timer will display a message every 10 seconds')
