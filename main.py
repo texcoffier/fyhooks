@@ -1,11 +1,8 @@
 #!/usr/bin/python3
-
 """
-Make many things
+Setup application data and used functionnalities
 """
-
 # pylint: disable=unused-import
-
 from typing import Dict, List, Tuple, Callable, Any
 from reactor import R
 import handle_stdin

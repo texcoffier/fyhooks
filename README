@@ -1,0 +1,27 @@
+Programming by functionnality with events.
+
+Only one import needed :
+
+    from reactor import R
+
+Sending an event :
+
+    answer = R('event-type', arg1, arg2...)
+    # 'answer' is None if nobody managed the event
+    #          or the data returned by the event handler
+
+Event receiver :
+
+    @R.handler('event-type','OPTIONAL_PRIORIY_AS_A_STRING')
+    def function_name(arguments):
+        """
+        Argument as ('event-type', arg1, arg2...)
+        This function may update the arguments objects
+        """
+        return "Any data to stop event processing"
+        return None # To let over handlers analyse the event
+
+The main program can store the application full state in R.M
+so it is usable by any event handler.
+
+

@@ -5,7 +5,7 @@ The reactor framework.
 from typing import Dict, List, Tuple, Callable, Any
 
 EventType = str
-EventHandler = Callable[[Tuple], Any] # pylint: disable=invalid-name
+EventHandler = Callable[[Tuple], Any]
 Priority = str
 
 class Reactor:
