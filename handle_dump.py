@@ -19,7 +19,7 @@ def do_dump(args):
         return R('dump')
     return None
 
-@R.handler('help')
+@R.handler('help', 'C2')
 def print_help(args):
     "help"
     args[1].append('  p : display model dump')

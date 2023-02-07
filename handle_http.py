@@ -38,7 +38,7 @@ def _get(args):
     result = R('eval', server.path[1:])
     R('reply', server, result)
 
-@R.handler('help')
+@R.handler('help', 'T')
 def print_help(args):
     "help"
     args[1].append('Server waiting on http://127.0.0.1:8888/command')

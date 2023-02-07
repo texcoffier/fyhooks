@@ -10,6 +10,7 @@ import handle_help
 import handle_calc
 import handle_affectation
 import handle_dump
+import handle_reload
 import handle_timer
 import handle_http
 
@@ -22,7 +23,7 @@ class Model: # pylint: disable=too-few-public-methods
         lines.append(f'\n    model={self.variables}')
         lines.append('\n    history')
         for history in self.history:
-            lines.append(f'\n        {history}')
+            lines.append(f'\n        {history[:100]}')
         lines.append('\n    reactor')
         for line in str(R).split('\n'):
             lines.append(f'\n        {line}')

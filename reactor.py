@@ -11,6 +11,7 @@ Priority = str
 class Reactor:
     """Manage handlers"""
     M:Any = None
+    priority = 0
     def __init__(self):
         self.handlers: Dict[EventType, List[Tuple[Priority, int, EventHandler]]] = {}
         self.sorted_handlers: Dict[EventType, List[EventHandler]] = {}
@@ -20,8 +21,10 @@ class Reactor:
         if event_type not in self.handlers:
             self.handlers[event_type] = []
         handlers = self.handlers[event_type]
-        handlers.append((priority, len(handlers), handler))
+        # Reactor.priority is here only to never compare 2 handler (sorting will fail)
+        handlers.append((priority, Reactor.priority, handler))
         handlers.sort()
+        Reactor.priority += 1
         self.sorted_handlers[event_type] = [handler[2] for handler in handlers]
 
     def __call__(self, *args) -> Any:

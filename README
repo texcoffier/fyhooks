@@ -1,5 +1,8 @@
 Programming by functionnality with events.
 
+To launch demo: ./main.py
+
+
 Only one import needed :
 
     from reactor import R
@@ -7,7 +10,7 @@ Only one import needed :
 Sending an event :
 
     answer = R('event-type', arg1, arg2...)
-    # 'answer' is None if nobody managed the event
+    # 'answer' is None if no event handler managed the event
     #          or the data returned by the event handler
 
 Event receiver :
@@ -23,5 +26,7 @@ Event receiver :
 
 The main program can store the application full state in R.M
 so it is usable by any event handler.
+Concurrent modification of R.M is not thread safe: so protect it.
 
-
+The reloading of module having launched a thread will not restart the thread.
+But if the thread function only launch events, the new event handlers will be called.
