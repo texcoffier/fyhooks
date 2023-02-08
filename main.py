@@ -14,6 +14,7 @@ import handle_reload
 import handle_translations
 import handle_timer
 import handle_http
+import handle_log
 
 class Model: # pylint: disable=too-few-public-methods
     """The model"""
@@ -34,8 +35,9 @@ R.M = Model() # pylint: disable=invalid-name
 
 @R.handler('', 'A')
 def _record(args):
-    """Record all event"""
-    R.M.history.append(repr(args))
+    """Record all event except printing ones"""
+    if args[0] != 'print':
+        R.M.history.append(repr(args))
 
 R('INIT') # For translations because they are needed before START
 R('START')

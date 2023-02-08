@@ -5,7 +5,7 @@ The reactor framework.
 from typing import Dict, List, Tuple, Callable, Any
 
 EventType = str
-EventHandler = Callable[[Tuple], Any]
+EventHandler = Callable[[List], Any]
 Priority = str
 
 class Reactor:
@@ -27,9 +27,9 @@ class Reactor:
         Reactor.priority += 1
         self.sorted_handlers[event_type] = [handler[2] for handler in handlers]
 
-    def __call__(self, *args) -> Any:
+    def __call__(self, *targs) -> Any:
         """Send event"""
-        args = list(args)
+        args = list(targs)
         for handler in self.sorted_handlers.get(args[0], ()):
             result = handler(args)
             if result is not None:

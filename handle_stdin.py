@@ -15,7 +15,7 @@ def _start(_args):
         def run(self):
             """Send 'eval' event on line read"""
             for line in sys.stdin:
-                R('print', R('eval', line))
+                R('print', R('eval', line, sys.stdout, self))
     R('print', "[[[stdin_start]]]")
     StdinReader().start()
 
@@ -48,4 +48,3 @@ def translations(args):
     args[1]['fr']['stdin_timer'] = "Événement périodique"
     args[1]['en']['stdin_start'] = "Hit 'h' <enter> to print help."
     args[1]['fr']['stdin_start'] = "Tapez 'h' puis Entrée pour afficher l'aide."
-

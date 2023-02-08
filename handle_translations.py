@@ -2,11 +2,12 @@
 Handle translation
 """
 
+from typing import Dict
 import collections
 import re
 from reactor import R
 
-TRANSLATIONS = collections.defaultdict(dict)
+TRANSLATIONS:Dict[str,Dict[str,str]] = collections.defaultdict(dict)
 
 def replace(group):
     """Replace by the translation"""
