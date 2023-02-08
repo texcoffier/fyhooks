@@ -21,8 +21,11 @@ def _start(_args):
 
 @R.handler('print')
 def _print(args):
-    """Print on stdout"""
-    print(args[1])
+    """Print on stdout or the given file"""
+    if len(args) == 3:
+        print(args[1], file=args[2])
+    else:
+        print(args[1])
 
 @R.handler('timer')
 def _timer(_args):

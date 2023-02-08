@@ -2,6 +2,7 @@
 HTTP server
 """
 
+import codecs
 import threading
 import http.server
 from reactor import R
@@ -23,21 +24,15 @@ def _start(_args):
 
     HTTP().start()
 
-@R.handler('reply')
-def _reply(args):
-    """Send a response to the client"""
-    server = args[1]
-    server.send_response(200)
-    server.end_headers()
-    server.wfile.write(b'<!DOCTYPE html>\n<meta charset="utf-8"><pre>')
-    server.wfile.write(str(args[2]).encode('utf-8'))
-
 @R.handler('get')
 def _get(args):
     """Manage the HTTP get"""
     server = args[1]
     result = R('eval', server.path[1:])
-    R('reply', server, result)
+    server.send_response(200)
+    server.end_headers()
+    server.wfile.write(b'<!DOCTYPE html>\n<meta charset="utf-8"><pre>')
+    R('print', result, codecs.getwriter("utf-8")(server.wfile))
 
 @R.handler('help', 'T')
 def print_help(args):

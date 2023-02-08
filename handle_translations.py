@@ -38,11 +38,6 @@ def translations(args):
     args[1]['en']['translations_help'] = "To see messages in french, type: LANG='fr'"
     args[1]['fr']['translations_help'] = "Pour voir les messages en anglais, tapez LANG='en'"
 
-@R.handler('reply', 'A')
-def _reply(args):
-    """Translate the HTTP answer"""
-    args[2] = re.sub(r'\[\[\[([^]]*)]]]', replace, str(args[2]))
-
 @R.handler('informations')
 def _informations(args):
     """Dump some informations"""
