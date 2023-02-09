@@ -28,6 +28,10 @@ def _start(_args):
 def print_help(args):
     """Help message"""
     args[1].append("[[[translations_help]]]")
+@R.handler('help', 'C2')
+def print_help2(args):
+    "help"
+    args[1].append('  pt : [[[dump_t]]]')
 
 @R.handler('RELOAD')
 def _reload(_args):
@@ -38,11 +42,17 @@ def translations(args):
     "Translations"
     args[1]['en']['translations_help'] = "To see messages in french, type: LANG='fr'"
     args[1]['fr']['translations_help'] = "Pour voir les messages en anglais, tapez LANG='en'"
+    args[1]['en']['dump_t'] = "Translations dictionnary"
+    args[1]['fr']['dump_t'] = "Les traductions des messages"
 
-@R.handler('informations')
-def _informations(args):
-    """Dump some informations"""
-    for lang, messages in TRANSLATIONS.items():
-        args[1].append(f'  ======== {lang} ========\n')
-        for key, msg in sorted(messages.items()):
-            args[1].append(f'    {key:20} {msg.strip()[:40]}\n')
+@R.handler('eval')
+def do_dump(args):
+    """If it is the dump command do it"""
+    if args[1].strip() == 'pt':
+        lines = ['[[[dump_t]]]\n']
+        for lang, messages in TRANSLATIONS.items():
+            lines.append(f'  ======== {lang} ========\n')
+            for key, msg in sorted(messages.items()):
+                lines.append(f'    {key:20} {msg.strip()[:40]}\n')
+        return ''.join(lines)
+    return None

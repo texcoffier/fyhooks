@@ -22,7 +22,7 @@ def _start(_args):
 @R.handler('print')
 def _print(args):
     """Print on stdout or the given file"""
-    if len(args) == 3:
+    if len(args) >= 3:
         print(args[1], file=args[2])
     else:
         print(args[1])

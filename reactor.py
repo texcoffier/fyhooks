@@ -58,7 +58,7 @@ class Reactor:
             for priority, index, fct in handlers:
                 filename = fct.__code__.co_filename.split("/")[-1]
                 fctname = fct.__code__.co_name
-                text.append(f'    {priority:7}{index:3} {filename:25}{fctname}')
+                text.append(f'    {priority+"."+str(index):<10} {filename:25}{fctname}')
         return '\n'.join(text)
 
 R = Reactor()

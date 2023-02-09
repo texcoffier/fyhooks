@@ -32,7 +32,7 @@ def logs(args):
         return '[[[log_started]]]'
     return None
 
-@R.handler('help', 'C2')
+@R.handler('help', 'C3')
 def print_help(args):
     "help"
     args[1].append('  l : [[[log_help]]]')

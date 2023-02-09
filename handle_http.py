@@ -41,21 +41,17 @@ def _get(args):
     """Manage the HTTP get"""
     server = args[1]
     server.send_response(200)
+    if not R('http', server.path[1:], server):
+        server.send_header('Content-Type', 'text/plain; charset=UTF-8')
+    server.send_header('Cache-Control', 'no-cache')
+    server.send_header('Cache-Control', 'no-store')
     server.end_headers()
     wfile = codecs.getwriter("utf-8")(server.wfile)
-    wfile.write('<!DOCTYPE html>\n<meta charset="utf-8"><pre>')
     result = R('eval', server.path[1:], wfile, server)
     R('print', result, wfile)
-
-@R.handler('help', 'T')
-def print_help(args):
-    "help"
-    args[1].append('[[[http_start]]] http://127.0.0.1:8888/[[[http_command]]]')
 
 @R.handler('translations')
 def translations(args):
     "Translations"
     args[1]['en']['http_start'] = "Server waiting on"
     args[1]['fr']['http_start'] = "Le serveur web est en attente à l'adresse"
-    args[1]['en']['http_command'] = "command-as-with-the-keyboard"
-    args[1]['fr']['http_command'] = "une-commande-comme-au-clavier"
