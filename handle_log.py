@@ -34,7 +34,7 @@ def logs(state):
         return '[[[log_started]]]'
     return None
 
-@R.handler('help', 'C3')
+@R.handler('help', 'C2')
 def print_help(state):
     "help"
     state.help.append('  l : [[[log_help]]]')

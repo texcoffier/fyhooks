@@ -15,13 +15,12 @@ def home(state):
     if state.command == 'index.html':
         return r'''
 <style>
-    BODY { box-sizing: border-box; margin: 0px }
-    PRE { margin: 0px }
-    IFRAME { }
-    TABLE { width: 100%; height: 100%; position: absolute; top: 0px; bottom: 0px }
-    TABLE TR { height: 20% }
-    TD { width: 20% }
-    INPUT { width: 100% }
+    BODY { box-sizing: border-box; margin: 0px; }
+    IFRAME { box-sizing: border-box; white-space: nowrap }
+    BODY > DIV { display: inline-block; width: 25vw; height: 100% }
+    BODY > DIV > DIV:nth-child(1) { height: 70% }
+    BODY > DIV > DIV:nth-child(2) { height: 20% }
+    BODY > DIV > DIV:nth-child(3) { height: 10% }
 </style>
 <script>
 function do_reload(cmd) {
@@ -35,33 +34,31 @@ function send_command(input) {
     var iframe = input;
     while(iframe.tagName != 'IFRAME')
         iframe = iframe.nextSibling;
+    if ( document.getElementById('profile').checked )
+        cmd = '/PROFILE' + cmd;        
     iframe.src = cmd;
+    setTimeout(function() {
+        var iframe = document.getElementById('pm');
+        var src = iframe.src;
+        iframe.src = src;
+        }, 200);
 }
 </script>
-<table>
-<tr>
-<td>
-    <button onclick="do_reload('/r')">[[[home_reload_modules]]]</button>
-    <button onclick="do_reload('/LANG=\'fr\'')">FR</button>
-    <button onclick="do_reload('/LANG=\'en\'')">EN</button>
-    <p>
-    [[[home_command]]]
-    <input onchange="send_command(this)">
-    [[[home_result]]]
-    <iframe width="100%" height="100px"></iframe>
-
-<td rowspan="5"><iframe src="/ph" width="100%" height="100%"></iframe></td>
-<td rowspan="5"><iframe src="/pr" width="100%" height="100%"></iframe></td>
-<td rowspan="5"><iframe src="/l" width="100%" height="100%"></iframe></td>
-<td rowspan="5"><iframe src="/pt" width="100%" height="100%"></iframe></td>
-</tr>
-<tr>
-<td rowspan="1"><iframe src="/h" width="100%" height="100%"></iframe></td>
-</tr>
-<tr>
-<td rowspan="1"><iframe src="/pm" width="100%" height="100%"></iframe></td>
-</tr>
-</table>
+<div><div>
+        <button onclick="do_reload('/r')">[[[home_reload_modules]]]</button>
+        <button onclick="do_reload('/LANG=\'fr\'')">FR</button>
+        <button onclick="do_reload('/LANG=\'en\'')">EN</button>
+        <p>
+        [[[home_command]]] (<label><input id="profile" type="checkbox"> Profile</label>)
+        <input style="width:100%" onchange="send_command(this)">
+        [[[home_result]]]
+        <iframe width="100%" height="80%"></iframe>
+    </div>
+    <div><iframe src="/h" width="100%" height="100%"></iframe></div>
+    <div><iframe id="pm" src="/pm" width="100%" height="100%"></iframe></div>
+</div><div><iframe src="/pr" width="100%" height="100%"></iframe>
+</div><div><iframe src="/l" width="100%" height="100%"></iframe>
+</div><div><iframe src="/pt" width="100%" height="100%"></iframe></div>
         '''
     return None
 

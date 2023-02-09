@@ -35,7 +35,7 @@ def do_reload(state):
                                    for module, must_reload in to_reload.items()
                                    if must_reload)
 
-@R.handler('help', 'C2')
+@R.handler('help', 'C3')
 def print_help(state):
     "help"
     state.help.append('  r : [[[reload_help]]]')
