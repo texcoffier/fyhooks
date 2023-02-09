@@ -32,9 +32,9 @@ def _timer(_state):
         R('print', string=f'[[[stdin_timer]]] T={time}')
 
 @R.handler('eval', 'Z')
-def syntax_error(_state):
+def syntax_error(state):
     """If execution is here, nothing has been reconized"""
-    return "[[[stdin_error]]]"
+    return f"[[[stdin_error]]] «{state.command}»"
 
 @R.handler('translations')
 def translations(state):

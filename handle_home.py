@@ -17,16 +17,19 @@ def home(state):
     content = ['''
 <style>
     BODY { box-sizing: border-box; margin: 0px; overflow: hidden }
-    BODY, INPUT, BUTTON { font-family: sans-serif; font-size: 1vw; }
-    IFRAME { box-sizing: border-box; white-space: nowrap;
-             border: 0px; }
-    BODY > DIV { display: inline-block; width: 25vw; height: 100% }
-    BODY > DIV > DIV:nth-child(1) { height: 70%; background: #EFF }
-    BODY > DIV > DIV:nth-child(2) { height: 20%; background: #FEF }
-    BODY > DIV > DIV:nth-child(3) { height: 10%; background: #FFE }
-    BODY > DIV:nth-child(2) { background: #FEE }
-    BODY > DIV:nth-child(3) { background: #EFE }
-    BODY > DIV:nth-child(4) { background: #EEF }
+    BODY, INPUT, BUTTON { font-family: monospace,monospace; font-size: 0.7vw; }
+    BODY > DIV { display: inline-block; height: 100%; white-space: pre;
+                 vertical-align: top; overflow: auto}
+    BODY > DIV > DIV { overflow: auto; white-space: pre;}
+    DIV#output { white-space: pre;}
+    BODY > DIV > DIV:nth-child(1) { height: 15%; background: #EFF;  white-space:normal }
+    BODY > DIV > DIV:nth-child(2) { height: 45%; background: #F8F8F8 }
+    BODY > DIV > DIV:nth-child(3) { height: 25%; background: #FEF }
+    BODY > DIV > DIV:nth-child(4) { height: 15%; background: #FFE }
+    BODY > DIV:nth-child(1) { width: 36vw; overflow: hidden; white-space:normal }
+    BODY > DIV:nth-child(2) { width: 22vw; background: #FEE }
+    BODY > DIV:nth-child(3) { width: 19vw; background: #EFE }
+    BODY > DIV:nth-child(4) { width: 23vw; background: #EEF }
 </style>
 <script>
 function do_reload(cmd) {
@@ -36,18 +39,25 @@ function do_reload(cmd) {
     setTimeout(function() { location.reload(); }, 100);
 }
 function send_command(input) {
-    var cmd = '/' + input.value;
-    var iframe = input;
-    while(iframe.tagName != 'IFRAME')
-        iframe = iframe.nextSibling;
+    var cmd = '/' + encodeURIComponent(input.value);
+    var output = document.getElementById('output');
     if ( document.getElementById('profile').checked )
         cmd = '/PROFILE' + cmd;        
-    iframe.src = cmd;
-    setTimeout(function() {
-        var iframe = document.getElementById('pm');
-        var src = iframe.src;
-        iframe.src = src;
-        }, 200);
+    output.setAttribute('src', cmd);
+    load_data(output);
+    setTimeout(function() { document.getElementById('pm'); }, 200);
+}
+function load_data(div) {
+    var url = div.getAttribute('src');
+    if ( ! url )
+        return;
+    var xhr = new XMLHttpRequest();
+    xhr.addEventListener('readystatechange',
+        function(event) {
+            div.innerHTML = event.target.responseText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            })
+    xhr.open("GET", url);
+    xhr.send();
 }
 </script>
 <div><div>''']
@@ -60,13 +70,13 @@ function send_command(input) {
         [[[home_command]]] (<label><input id="profile" type="checkbox"> Profile</label>)
         <input style="width:100%" onchange="send_command(this)">
         [[[home_result]]]
-        <iframe width="100%" height="70%" style="background:#F8F8F8"></iframe>
-    </div>
-    <div><iframe src="/h" width="100%" height="100%"></iframe></div>
-    <div><iframe id="pm" src="/pm" width="100%" height="100%"></iframe></div>
-</div><div><iframe src="/pr" width="100%" height="100%"></iframe>
-</div><div><iframe src="/l" width="100%" height="100%"></iframe>
-</div><div><iframe src="/pt" width="100%" height="100%"></iframe></div>
+        </div><div id="output" style="background:#F8F8F8"></div><div src="/h"></div><div id="pm" src="/pm"></div>
+    </div><div src="/pr"></div><div src="/l"></div><div src="/pt"></div>
+<script>
+var divs = document.getElementsByTagName('DIV');
+for(var div of divs)
+    load_data(div);
+</script>
         ''')
     return ''.join(content)
 

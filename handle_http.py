@@ -5,6 +5,7 @@ HTTP server
 import codecs
 import threading
 import http.server
+import urllib
 from reactor import R
 
 @R.handler('START')
@@ -40,14 +41,15 @@ def _start(_state):
 def _get(state):
     """Manage the HTTP get"""
     server = state.server
+    url = urllib.parse.unquote(server.path[1:])
     server.send_response(200)
-    if not R('http', url=server.path[1:], server=server):
+    if not R('http', url=url, server=server):
         server.send_header('Content-Type', 'text/plain; charset=UTF-8')
     server.send_header('Cache-Control', 'no-cache')
     server.send_header('Cache-Control', 'no-store')
     server.end_headers()
     wfile = codecs.getwriter("utf-8")(server.wfile)
-    result = R('eval', command=server.path[1:].strip(), file=wfile, server=server)
+    result = R('eval', command=url, file=wfile, server=server)
     R('print', string=result, file=wfile, server=server)
 
 @R.handler('translations')

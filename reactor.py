@@ -15,7 +15,7 @@ class State: # pylint: disable=too-few-public-methods
             if key == 'event':
                 continue
             if not isinstance(item, (str, int)):
-                item = '<' + item.__class__.__name__ + '>'
+                item = item.__class__.__name__
             clean.append(f'{key}={item}')
         return ' '.join(clean)
 
