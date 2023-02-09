@@ -68,7 +68,7 @@ class Reactor:
     def __str__(self):
         """State"""
         text = []
-        for key, handlers in self.handlers.items():
+        for key, handlers in sorted(self.handlers.items()):
             text.append(key)
             for priority, index, fct in handlers:
                 filename = fct.__code__.co_filename.split("/")[-1]

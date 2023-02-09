@@ -3,7 +3,7 @@ from reactor import R
 @R.handler('http')
 def http(state):
     """Set the good HTTP header"""
-    # XXX: should be done has TRANSLATIONS
+    # Should not be done has TRANSLATIONS because the path may be complex
     if state.server.path == '/index.html':
         state.server.send_header('Content-Type', 'text/html; charset=UTF-8')
         return True
@@ -12,15 +12,21 @@ def http(state):
 @R.handler('eval')
 def home(state):
     """Home page"""
-    if state.command == 'index.html':
-        return r'''
+    if state.command != 'index.html':
+        return None
+    content = ['''
 <style>
-    BODY { box-sizing: border-box; margin: 0px; }
-    IFRAME { box-sizing: border-box; white-space: nowrap }
+    BODY { box-sizing: border-box; margin: 0px; overflow: hidden }
+    BODY, INPUT, BUTTON { font-family: sans-serif; font-size: 1vw; }
+    IFRAME { box-sizing: border-box; white-space: nowrap;
+             border: 0px; }
     BODY > DIV { display: inline-block; width: 25vw; height: 100% }
-    BODY > DIV > DIV:nth-child(1) { height: 70% }
-    BODY > DIV > DIV:nth-child(2) { height: 20% }
-    BODY > DIV > DIV:nth-child(3) { height: 10% }
+    BODY > DIV > DIV:nth-child(1) { height: 70%; background: #EFF }
+    BODY > DIV > DIV:nth-child(2) { height: 20%; background: #FEF }
+    BODY > DIV > DIV:nth-child(3) { height: 10%; background: #FFE }
+    BODY > DIV:nth-child(2) { background: #FEE }
+    BODY > DIV:nth-child(3) { background: #EFE }
+    BODY > DIV:nth-child(4) { background: #EEF }
 </style>
 <script>
 function do_reload(cmd) {
@@ -44,24 +50,25 @@ function send_command(input) {
         }, 200);
 }
 </script>
-<div><div>
-        <button onclick="do_reload('/r')">[[[home_reload_modules]]]</button>
-        <button onclick="do_reload('/LANG=\'fr\'')">FR</button>
-        <button onclick="do_reload('/LANG=\'en\'')">EN</button>
+<div><div>''']
+    buttons = []
+    R('buttons', buttons=buttons)
+    for url, label in buttons:
+        content.append(f'<button onclick="do_reload(\'{url}\')">{label}</button> ')
+    content.append('''
         <p>
         [[[home_command]]] (<label><input id="profile" type="checkbox"> Profile</label>)
         <input style="width:100%" onchange="send_command(this)">
         [[[home_result]]]
-        <iframe width="100%" height="80%"></iframe>
+        <iframe width="100%" height="70%" style="background:#F8F8F8"></iframe>
     </div>
     <div><iframe src="/h" width="100%" height="100%"></iframe></div>
     <div><iframe id="pm" src="/pm" width="100%" height="100%"></iframe></div>
 </div><div><iframe src="/pr" width="100%" height="100%"></iframe>
 </div><div><iframe src="/l" width="100%" height="100%"></iframe>
 </div><div><iframe src="/pt" width="100%" height="100%"></iframe></div>
-        '''
-    return None
-
+        ''')
+    return ''.join(content)
 
 @R.handler('START', 'N')
 def _start(_state):
@@ -71,8 +78,6 @@ def _start(_state):
 @R.handler('translations')
 def translations(state):
     "Translations"
-    state.translations['en']['home_reload_modules'] = "Reload Python modules"
-    state.translations['fr']['home_reload_modules'] = "Recharge les module Python"
     state.translations['en']['home_command'] = "Enter a command to evaluate"
     state.translations['fr']['home_command'] = "Saisissez une commande à évaluer"
     state.translations['en']['home_result'] = "The evaluation result:"

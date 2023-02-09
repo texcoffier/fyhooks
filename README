@@ -30,8 +30,9 @@ Event types are not defined, their usage define their attributes:
     R('eval', command=, file=, server=) # file and server are needed for live log
     R('translations', translations=)
     R('help', help=)
-    R('get', server=) # request analyser (in order to be stackable)
-    R('http', server=) # send HTTP header if not default
+    R('get', server=)         # request analyser (in order to be stackable)
+    R('http', server=)        # send HTTP header if not default
+    R('buttons', buttons=)    # append tuple ('url', 'label') to add HTML buttons
 
 The main program can store the application full state in R.M
 so it is usable by any event handler.

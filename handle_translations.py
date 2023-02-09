@@ -51,8 +51,14 @@ def do_dump(state):
     if state.command == 'pt':
         lines = ['[[[dump_t]]]\n']
         for lang, messages in TRANSLATIONS.items():
-            lines.append(f'  ======== {lang} ========\n')
+            lines.append(f'======== {lang} ========\n')
             for key, msg in sorted(messages.items()):
-                lines.append(f'    {key:20} {msg.strip()[:40]}\n')
+                lines.append(f'{key:17} {msg.strip()}\n')
         return ''.join(lines)
     return None
+
+@R.handler('buttons')
+def language(state):
+    """Add reload button"""
+    for lang in TRANSLATIONS:
+        state.buttons.append((f"/LANG=\\'{lang}\\'", lang))
