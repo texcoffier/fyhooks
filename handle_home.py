@@ -66,10 +66,10 @@ function send_command(input) {
     return None
 
 
-@R.handler('help', 'T')
-def print_help(state):
+@R.handler('START', 'N')
+def _start(_state):
     "help"
-    state.help.append('[[[http_start]]] http://127.0.0.1:8888/index.html')
+    R('print', string="[[[http_start]]] http://127.0.0.1:8888/index.html")
 
 @R.handler('translations')
 def translations(state):

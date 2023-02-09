@@ -19,7 +19,7 @@ def start(output):
                     R("print", string=history[i], file=output)
                     i += 1
                 output.flush()
-                time.sleep(1)
+                time.sleep(0.1)
     HTTP().start()
 
 
