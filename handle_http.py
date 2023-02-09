@@ -48,7 +48,7 @@ def _get(args):
     server.end_headers()
     wfile = codecs.getwriter("utf-8")(server.wfile)
     result = R('eval', server.path[1:], wfile, server)
-    R('print', result, wfile)
+    R('print', result, wfile, server)
 
 @R.handler('translations')
 def translations(args):
