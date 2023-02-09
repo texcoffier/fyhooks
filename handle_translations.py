@@ -19,7 +19,7 @@ def translate(args):
     """Translate"""
     args[1] = re.sub(r'\[\[\[([^]]*)]]]', replace, str(args[1]))
 
-@R.handler('INIT')
+@R.handler('PRESTART')
 def _start(_args):
     R.M.variables['LANG'] = 'fr'
     R('translations', TRANSLATIONS)

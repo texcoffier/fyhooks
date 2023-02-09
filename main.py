@@ -34,5 +34,5 @@ def _record(args):
             clean.append(str(item))
         R.M.history.append(str(clean))
 
-R('INIT') # For translations because they are needed before START
+R('PRESTART') # For translations because they are needed before START
 R('START')
