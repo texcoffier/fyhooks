@@ -25,15 +25,10 @@ class Model: # pylint: disable=too-few-public-methods
 R.M = Model() # pylint: disable=invalid-name
 
 @R.handler('', 'A')
-def _record(args):
+def _record(state):
     """Record all event except printing ones"""
-    if args[0] != 'print':
-        clean = []
-        for item in args:
-            if not isinstance(item, (str, int)):
-                item = item.__class__.__name__
-            clean.append(str(item))
-        R.M.history.append(str(clean))
+    if state.event != 'print':
+        R.M.history.append(str(state))
 
 R('PRESTART') # For translations because they are needed before START
 R('START')

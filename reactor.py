@@ -4,8 +4,23 @@ The reactor framework.
 
 from typing import Dict, List, Tuple, Callable, Any
 
+class State: # pylint: disable=too-few-public-methods
+    """The state given to handlers"""
+    def __init__(self, event, kargs):
+        self.__dict__.update(kargs)
+        self.event = event
+    def __str__(self):
+        clean = [self.event]
+        for key, item in sorted(self.__dict__.items()):
+            if key == 'event':
+                continue
+            if not isinstance(item, (str, int)):
+                item = '<' + item.__class__.__name__ + '>'
+            clean.append(f'{key}={item}')
+        return ' '.join(clean)
+
 EventType = str
-EventHandler = Callable[[List], Any]
+EventHandler = Callable[[State], Any]
 Priority = str
 
 class Reactor:
@@ -27,11 +42,11 @@ class Reactor:
         Reactor.priority += 1
         self.sorted_handlers[event_type] = [handler[2] for handler in handlers]
 
-    def __call__(self, *targs) -> Any:
+    def __call__(self, event, **kargs) -> Any:
         """Send event"""
-        args = list(targs)
-        for handler in self.sorted_handlers.get(args[0], ()):
-            result = handler(args)
+        state = State(event, kargs)
+        for handler in self.sorted_handlers.get(event, ()):
+            result = handler(state)
             if result is not None:
                 return result
         return None

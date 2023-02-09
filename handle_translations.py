@@ -15,40 +15,40 @@ def replace(group):
     return TRANSLATIONS.get(R.M.variables.get('LANG', 'en'), {}).get(key, key)
 
 @R.handler('print', 'B')
-def translate(args):
+def translate(state):
     """Translate"""
-    args[1] = re.sub(r'\[\[\[([^]]*)]]]', replace, str(args[1]))
+    state.string = re.sub(r'\[\[\[([^]]*)]]]', replace, str(state.string))
 
 @R.handler('PRESTART')
-def _start(_args):
+def _start(_state):
     R.M.variables['LANG'] = 'fr'
-    R('translations', TRANSLATIONS)
+    R('translations', translations=TRANSLATIONS)
 
 @R.handler('help', 'S')
-def print_help(args):
+def print_help(state):
     """Help message"""
-    args[1].append("[[[translations_help]]]")
+    state.help.append("[[[translations_help]]]")
 @R.handler('help', 'C2')
-def print_help2(args):
+def print_help2(state):
     "help"
-    args[1].append('  pt : [[[dump_t]]]')
+    state.help.append('  pt : [[[dump_t]]]')
 
 @R.handler('RELOAD')
-def _reload(_args):
-    R('translations', TRANSLATIONS)
+def _reload(_state):
+    R('translations', translations=TRANSLATIONS)
 
 @R.handler('translations')
-def translations(args):
+def translations(state):
     "Translations"
-    args[1]['en']['translations_help'] = "To see messages in french, type: LANG='fr'"
-    args[1]['fr']['translations_help'] = "Pour voir les messages en anglais, tapez LANG='en'"
-    args[1]['en']['dump_t'] = "Translations dictionnary"
-    args[1]['fr']['dump_t'] = "Les traductions des messages"
+    state.translations['en']['translations_help'] = "To see messages in french, type: LANG='fr'"
+    state.translations['fr']['translations_help'] = "Pour voir les messages en anglais, tapez LANG='en'"
+    state.translations['en']['dump_t'] = "Translations dictionnary"
+    state.translations['fr']['dump_t'] = "Les traductions des messages"
 
 @R.handler('eval')
-def do_dump(args):
+def do_dump(state):
     """If it is the dump command do it"""
-    if args[1].strip() == 'pt':
+    if state.command == 'pt':
         lines = ['[[[dump_t]]]\n']
         for lang, messages in TRANSLATIONS.items():
             lines.append(f'  ======== {lang} ========\n')

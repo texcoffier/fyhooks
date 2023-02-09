@@ -8,7 +8,7 @@ import http.server
 from reactor import R
 
 @R.handler('START')
-def _start(_args):
+def _start(_state):
     """Launch the thread"""
     class HTTPServer(http.server.HTTPServer):
         """Do not close connection automaticaly"""
@@ -22,7 +22,7 @@ def _start(_args):
         do_not_close = False
         def do_GET(self): # pylint: disable=invalid-name
             """Send 'get' event on client connection"""
-            R("get", self)
+            R('get', server=self)
             if not self.do_not_close:
                 self.server.old_shutdown_request(self.wfile._sock) # pylint: disable=protected-access
         def finish(self):
@@ -37,21 +37,21 @@ def _start(_args):
     HTTP().start()
 
 @R.handler('get')
-def _get(args):
+def _get(state):
     """Manage the HTTP get"""
-    server = args[1]
+    server = state.server
     server.send_response(200)
-    if not R('http', server.path[1:], server):
+    if not R('http', url=server.path[1:], server=server):
         server.send_header('Content-Type', 'text/plain; charset=UTF-8')
     server.send_header('Cache-Control', 'no-cache')
     server.send_header('Cache-Control', 'no-store')
     server.end_headers()
     wfile = codecs.getwriter("utf-8")(server.wfile)
-    result = R('eval', server.path[1:], wfile, server)
-    R('print', result, wfile, server)
+    result = R('eval', command=server.path[1:].strip(), file=wfile, server=server)
+    R('print', string=result, file=wfile)
 
 @R.handler('translations')
-def translations(args):
+def translations(state):
     "Translations"
-    args[1]['en']['http_start'] = "Server waiting on"
-    args[1]['fr']['http_start'] = "Le serveur web est en attente à l'adresse"
+    state.translations['en']['http_start'] = "Server waiting on"
+    state.translations['fr']['http_start'] = "Le serveur web est en attente à l'adresse"

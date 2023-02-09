@@ -8,9 +8,9 @@ import importlib
 from reactor import R
 
 @R.handler('eval')
-def do_reload(args):
+def do_reload(state):
     """If reload command: do it"""
-    if args[1].strip() != 'r':
+    if state.command != 'r':
         return None
     to_reload = {}
     for key, handlers in tuple(R.handlers.items()):
@@ -36,12 +36,12 @@ def do_reload(args):
                                    if must_reload)
 
 @R.handler('help', 'C2')
-def print_help(args):
+def print_help(state):
     "help"
-    args[1].append('  r : [[[reload_help]]]')
+    state.help.append('  r : [[[reload_help]]]')
 
 @R.handler('translations')
-def translations(args):
+def translations(state):
     "Translations"
-    args[1]['en']['reload_help'] = "reload modified Python modules"
-    args[1]['fr']['reload_help'] = "reactualise les modules Python qui ont été modifiés"
+    state.translations['en']['reload_help'] = "reload modified Python modules"
+    state.translations['fr']['reload_help'] = "reactualise les modules Python qui ont été modifiés"

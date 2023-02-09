@@ -1,15 +1,18 @@
 from reactor import R
 
 @R.handler('http')
-def http(args):
-    if args[1] == 'index.html':
-        args[2].send_header('Content-Type', 'text/html; charset=UTF-8')
+def http(state):
+    """Set the good HTTP header"""
+    # XXX: should be done has TRANSLATIONS
+    if state.server.path == '/index.html':
+        state.server.send_header('Content-Type', 'text/html; charset=UTF-8')
         return True
+    return None
 
 @R.handler('eval')
-def home(args):
+def home(state):
     """Home page"""
-    if args[1].strip() == 'index.html':
+    if state.command == 'index.html':
         return r'''
 <style>
     BODY { box-sizing: border-box; margin: 0px }
@@ -64,17 +67,16 @@ function send_command(input) {
 
 
 @R.handler('help', 'T')
-def print_help(args):
+def print_help(state):
     "help"
-    args[1].append('[[[http_start]]] http://127.0.0.1:8888/index.html')
+    state.help.append('[[[http_start]]] http://127.0.0.1:8888/index.html')
 
 @R.handler('translations')
-def translations(args):
+def translations(state):
     "Translations"
-    args[1]['en']['home_reload_modules'] = "Reload Python modules"
-    args[1]['fr']['home_reload_modules'] = "Recharge les module Python"
-    args[1]['en']['home_command'] = "Enter a command to evaluate"
-    args[1]['fr']['home_command'] = "Saisissez une commande à évaluer"
-    args[1]['en']['home_result'] = "The evaluation result:"
-    args[1]['fr']['home_result'] = "Le résultat de l'évaluation :"
-
+    state.translations['en']['home_reload_modules'] = "Reload Python modules"
+    state.translations['fr']['home_reload_modules'] = "Recharge les module Python"
+    state.translations['en']['home_command'] = "Enter a command to evaluate"
+    state.translations['fr']['home_command'] = "Saisissez une commande à évaluer"
+    state.translations['en']['home_result'] = "The evaluation result:"
+    state.translations['fr']['home_result'] = "Le résultat de l'évaluation :"

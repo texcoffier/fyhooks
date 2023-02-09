@@ -5,23 +5,23 @@ Display help
 from reactor import R
 
 @R.handler('eval')
-def get_help(args):
+def get_help(state):
     """If it is the help command, return it to stop propagation"""
-    if args[1].strip() == 'h':
+    if state.command == 'h':
         data = []
-        R('help', data)
+        R('help', help=data)
         return '[[[help_cmd]]]' + '\n'.join(data)
     return None
 
 @R.handler('help', 'C')
-def print_help(args):
+def print_help(state):
     "help"
-    args[1].append('  h : [[[help_help]]]')
+    state.help.append('  h : [[[help_help]]]')
 
 @R.handler('translations')
-def translations(args):
+def translations(state):
     "Translations"
-    args[1]['en']['help_help'] = "print this help"
-    args[1]['fr']['help_help'] = "affiche ce message d'aide"
-    args[1]['en']['help_cmd'] = "Commands:\n"
-    args[1]['fr']['help_cmd'] = "Commandes :\n"
+    state.translations['en']['help_help'] = "print this help"
+    state.translations['fr']['help_help'] = "affiche ce message d'aide"
+    state.translations['en']['help_cmd'] = "Commands:\n"
+    state.translations['fr']['help_cmd'] = "Commandes :\n"

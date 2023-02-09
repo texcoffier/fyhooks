@@ -9,20 +9,29 @@ Only one import needed :
 
 Sending an event :
 
-    answer = R('event-type', arg1, arg2...)
+    answer = R('event-type', attr1=value, attr2=value...)
     # 'answer' is None if no event handler managed the event
     #          or the data returned by the event handler
 
 Event receiver :
 
     @R.handler('event-type','OPTIONAL_PRIORIY_AS_A_STRING')
-    def function_name(arguments):
+    def function_name(state):
         """
-        Argument as ('event-type', arg1, arg2...)
-        This function may update the arguments objects
+        state.event contains the event type
+        Other state attributes depends on the event type.
         """
         return "Any data to stop event processing"
         return None # To let over handlers analyse the event
+
+Event types are not defined, their usage define their attributes:
+
+    R('print', string=, file=)
+    R('eval', command=, file=, server=) # file and server are needed for live log
+    R('translations', translations=)
+    R('help', help=)
+    R('get', server=) # request analyser (in order to be stackable)
+    R('http', server=) # send HTTP header if not default
 
 The main program can store the application full state in R.M
 so it is usable by any event handler.
