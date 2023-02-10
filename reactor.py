@@ -42,10 +42,10 @@ class Reactor:
         Reactor.priority += 1
         self.sorted_handlers[event_type] = [handler[2] for handler in handlers]
 
-    def __call__(self, event, **kargs) -> Any:
+    def __call__(self, event_type: EventType, **kargs) -> Any:
         """Send event"""
-        state = State(event, kargs)
-        for handler in self.sorted_handlers.get(event, ()):
+        state = State(event_type, kargs)
+        for handler in self.sorted_handlers.get(event_type, ()):
             result = handler(state)
             if result is not None:
                 return result
@@ -56,7 +56,7 @@ class Reactor:
         """Add a hander decorator.
         Event type '' match all existing events.
         """
-        def handler(function:EventHandler):
+        def handler(function:EventHandler) -> EventHandler:
             if event_type:
                 self.add(event_type, function, priority)
             else:

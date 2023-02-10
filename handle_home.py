@@ -1,3 +1,7 @@
+"""
+Web Home page for the application
+"""
+
 from reactor import R
 
 @R.handler('http')

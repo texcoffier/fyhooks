@@ -1,5 +1,5 @@
 """
-HTTP server
+Display log in realtime
 """
 
 import time
@@ -21,7 +21,6 @@ def start(output):
                 output.flush()
                 time.sleep(0.1)
     HTTP().start()
-
 
 @R.handler('eval')
 def logs(state):

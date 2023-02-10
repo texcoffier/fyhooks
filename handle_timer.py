@@ -31,5 +31,6 @@ def print_help(state):
 @R.handler('translations')
 def translations(state):
     "Translations"
+    # pylint: disable=line-too-long
     state.translations['en']['timer_help'] = "A timer will display a message every 10 seconds"
     state.translations['fr']['timer_help'] = "Une tâche périodique affiche un message toutes les 10 secondes"

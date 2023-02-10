@@ -40,6 +40,7 @@ def _reload(_state):
 @R.handler('translations')
 def translations(state):
     "Translations"
+    # pylint: disable=line-too-long
     state.translations['en']['translations_help'] = "To see messages in french, type: LANG='fr'"
     state.translations['fr']['translations_help'] = "Pour voir les messages en anglais, tapez LANG='en'"
     state.translations['en']['dump_t'] = "Translations dictionnary"

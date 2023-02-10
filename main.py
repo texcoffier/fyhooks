@@ -3,7 +3,7 @@
 Setup application data and used functionnalities
 """
 # pylint: disable=unused-import
-from typing import Dict, List, Tuple, Callable, Any
+from typing import Dict, List, Any
 from reactor import R
 import handle_stdin
 import handle_help
@@ -23,6 +23,7 @@ class Model: # pylint: disable=too-few-public-methods
     """The model"""
     variables:Dict[str, Any] = {}
     history:List[str] = []
+
 R.M = Model() # pylint: disable=invalid-name
 
 @R.handler('', 'A')

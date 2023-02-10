@@ -11,7 +11,7 @@ from reactor import R
 
 @R.handler('get', 'A')
 def profile(state):
-    """Do profiling"""
+    """Do profiling only for web server"""
     server = state.server
     if not server.path.startswith('/PROFILE/'):
         return None # No profile to do
@@ -30,15 +30,4 @@ def profile(state):
 
     wfile = codecs.getwriter("utf-8")(server.wfile)
     R('print', string=buffer.getvalue(), file=wfile)
-    return ''
-
-# @R.handler('help')
-# def print_help(state):
-#     "help"
-#     state.help.append('  EXPRESSION : [[[calc_help]]]')
-# 
-# @R.handler('translations')
-# def translations(state):
-#     "Translations"
-#     state.translations['en']['calc_help'] = "print the evaluation result"
-#     state.translations['fr']['calc_help'] = "affiche le résultat de l'évaluation"
+    return '' # Do not continue evaluation
