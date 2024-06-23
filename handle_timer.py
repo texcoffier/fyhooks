@@ -6,6 +6,8 @@ import threading
 import time
 from reactor import R
 
+R.description('timer', 'Arguments: None\nThe event is sent every 10 seconds.')
+
 @R.handler('START')
 def _start(_state):
     """Launch the thread"""

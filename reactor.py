@@ -2,6 +2,7 @@
 The reactor framework.
 """
 
+import collections
 from typing import Dict, List, Tuple, Callable, Any
 
 class State: # pylint: disable=too-few-public-methods
@@ -30,6 +31,7 @@ class Reactor:
     def __init__(self):
         self.handlers: Dict[EventType, List[Tuple[Priority, int, EventHandler]]] = {}
         self.sorted_handlers: Dict[EventType, List[EventHandler]] = {}
+        self.handler_descriptions: Dict[EventType, str] = collections.defaultdict(str)
 
     def add(self, event_type: EventType, handler: EventHandler, priority: Priority) -> None:
         """Add an handler"""
@@ -51,9 +53,13 @@ class Reactor:
                 return result
         return None
 
-    def handler(self, event_type: EventType, priority: Priority = 'MEDIUM'
+    def description(self, event_type: EventType, description:str) -> None:
+        """Add a handler description"""
+        self.handler_descriptions[event_type] += description
+
+    def handler(self, event_type: EventType, priority: Priority = 'MEDIUM',
                ) -> Callable[[EventHandler], EventHandler]:
-        """Add a hander decorator.
+        """Add a handler decorator.
         Event type '' match all existing events.
         """
         def handler(function:EventHandler) -> EventHandler:
@@ -69,7 +75,14 @@ class Reactor:
         """State"""
         text = []
         for key, handlers in sorted(self.handlers.items()):
-            text.append(key)
+            text.append('='*79)
+            label = key + ' # '
+            indent = ' ' * (len(label) - 2) + '# '
+            description = self.handler_descriptions.get(key, '').split('\n')
+            text.append(label + description[0])
+            for line in description[1:]:
+                text.append(indent + line.strip())
+            text.append('    PRIORITY   FILE                     FUNCTION')
             for priority, index, fct in handlers:
                 filename = fct.__code__.co_filename.split("/")[-1]
                 fctname = fct.__code__.co_name

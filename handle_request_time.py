@@ -7,7 +7,7 @@ from reactor import R
 
 @R.handler('get', 'A')
 def start_timer(state):
-    """Register the start time fro web requests"""
+    """Register the start time from web requests"""
     state.server.start_time = time.time()
 
 @R.handler('print', 'L')

@@ -8,6 +8,10 @@ import http.server
 import urllib
 from reactor import R
 
+R.description('get', 'Arguments: state.server')
+R.description('http', '''Arguments: state.url, state.server
+Answer to the URL if needed.''')
+
 @R.handler('START')
 def _start(_state):
     """Launch the thread"""

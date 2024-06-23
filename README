@@ -7,13 +7,24 @@ Only one import needed :
 
     from reactor import R
 
+The main program define the application full state as a global variable
+usable by any functionality.
+Concurrent modification of R.M is not thread safe: so protect it.
+
+    class MyModel:
+        my_data = 2024
+    R.M = MyModel()
+
 Sending an event :
 
     answer = R('event-type', attr1=value, attr2=value...)
     # 'answer' is None if no event handler managed the event
-    #          or the data returned by the event handler
+    #          or the data returned by the last event handler called
 
-Event receiver :
+Add a new event receiver, functions are called by priorities (Abricot before Zombi).
+The state is created clean from the attributes values defined when calling
+and the handlers may change the attribute values or add new ones.
+The caller can define any attributes, they are not checked.
 
     @R.handler('event-type','OPTIONAL_PRIORIY_AS_A_STRING')
     def function_name(state):
@@ -24,8 +35,16 @@ Event receiver :
         return "Any data to stop event processing"
         return None # To let over handlers analyse the event
 
-Event types are not defined, their usage define their attributes:
+Add a description to the event type:
 
+    R.description('PRESTART', "No arguments, launched first")
+
+Event types are not defined, their usage define their attributes.
+Theses are some of the event type defined in the example application:
+
+    R('PRESTART')             # Initialisation of the functionnalities
+    R('START')                # Start the functionnalities
+    R('RELOAD')               # Some Python modules have been reload
     R('print', string=, file=)
     R('eval', command=, file=, server=) # file and server are needed for live log
     R('translations', translations=)
@@ -33,10 +52,34 @@ Event types are not defined, their usage define their attributes:
     R('get', server=)         # request analyser (in order to be stackable)
     R('http', server=)        # send HTTP header if not default
     R('buttons', buttons=)    # append tuple ('url', 'label') to add HTML buttons
-
-The main program can store the application full state in R.M
-so it is usable by any event handler.
-Concurrent modification of R.M is not thread safe: so protect it.
+    R('timer')                # Event send every 10 seconds
 
 The reloading of module having launched a thread will not restart the thread.
 But if the thread function only launch events, the new event handlers will be called.
+
+To add a new button for a new functionnality on the home page or command line,
+do not modify handle_home.py but create handle_xxx.py
+
+    @R.handler('eval')
+    def do_XXX(state):
+        """If XXX command: do it"""
+        if state.command != 'XXX':
+            return None
+        # Do XXX
+
+    @R.handler('buttons', 'X') # X to be before Reload
+    def xxx(state):
+        """Add XXX button on home page"""
+        state.buttons.append(('/XXX', '[[[XXX_button]]]'))
+
+    @R.handler('help', 'Z')
+    def print_help(state):
+        "help for command line"
+        state.help.append('  XXX : [[[XXX_button]]]')
+
+    @R.handler('translations')
+    def translations(state):
+        "Translations"
+        state.translations['en']['XXX_button'] = "Functionnality XXX"
+        state.translations['fr']['XXX_button'] = "Fonctionnalité XXX"
+    

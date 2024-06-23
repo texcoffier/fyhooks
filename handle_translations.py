@@ -7,6 +7,8 @@ import collections
 import re
 from reactor import R
 
+R.description('translations', 'Arguments: state.translations')
+
 TRANSLATIONS:Dict[str,Dict[str,str]] = collections.defaultdict(dict)
 
 def replace(group):

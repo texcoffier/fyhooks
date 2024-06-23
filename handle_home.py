@@ -4,6 +4,10 @@ Web Home page for the application
 
 from reactor import R
 
+R.description("buttons", """Arguments: state.buttons
+                            Called on home page initialization.
+                            You append your buttons [command, label] to state.buttons""")
+
 @R.handler('http')
 def http(state):
     """Set the good HTTP header"""

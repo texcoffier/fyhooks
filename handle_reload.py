@@ -7,6 +7,8 @@ import sys
 import importlib
 from reactor import R
 
+R.description("RELOAD", "Arguments: None\nCalled after a Python module reload")
+
 @R.handler('eval')
 def do_reload(state):
     """If reload command: do it"""

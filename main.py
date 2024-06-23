@@ -32,5 +32,13 @@ def _record(state):
     if state.event != 'print':
         R.M.history.append(str(state))
 
+R.description('PRESTART', "Arguments: None\nLaunched first to initialize things.")
+R.description('START', "Arguments: None\nLaunched after PRESTART to begin jobs.")
+R.description('eval', """Arguments: state.command, state.file, [state.server]
+                         Evaluate the command for command line or web server.""")
+R.description('help', """Arguments: state.help
+                         Append new help messages to state.help""")
+R.description('print', """Arguments: state.string [state.file] [state.server]""")
+
 R('PRESTART') # For translations because they are needed before START
 R('START')
