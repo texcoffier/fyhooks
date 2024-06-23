@@ -1,4 +1,4 @@
-Programming by functionnality with events.
+Programming by functionality with events.
 
 To launch demo: ./main.py
 
@@ -7,7 +7,7 @@ Only one import needed :
 
     from reactor import R
 
-The main program define the application full state as a global variable
+The main program defines the application full state as a global variable
 usable by any functionality.
 Concurrent modification of R.M is not thread safe: so protect it.
 
@@ -42,8 +42,8 @@ Add a description to the event type:
 Event types are not defined, their usage define their attributes.
 Theses are some of the event type defined in the example application:
 
-    R('PRESTART')             # Initialisation of the functionnalities
-    R('START')                # Start the functionnalities
+    R('PRESTART')             # Initialisation of the functionalities
+    R('START')                # Start the functionalities
     R('RELOAD')               # Some Python modules have been reload
     R('print', string=, file=)
     R('eval', command=, file=, server=) # file and server are needed for live log
@@ -57,7 +57,7 @@ Theses are some of the event type defined in the example application:
 The reloading of module having launched a thread will not restart the thread.
 But if the thread function only launch events, the new event handlers will be called.
 
-To add a new button for a new functionnality on the home page or command line,
+To add a new button for a new functionality on the home page or command line,
 do not modify handle_home.py but create handle_xxx.py
 
     @R.handler('eval')
@@ -80,6 +80,6 @@ do not modify handle_home.py but create handle_xxx.py
     @R.handler('translations')
     def translations(state):
         "Translations"
-        state.translations['en']['XXX_button'] = "Functionnality XXX"
-        state.translations['fr']['XXX_button'] = "Fonctionnalité XXX"
+        state.translations['en']['XXX_button'] = "Functionality XXX"
+        state.translations['fr']['XXX_button'] = "Fonctionalité XXX"
     

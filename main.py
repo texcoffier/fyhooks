@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Setup application data and used functionnalities
+Setup application data and used functionalities
 """
 # pylint: disable=unused-import
 from typing import Dict, List, Any

@@ -1,5 +1,5 @@
 """
-Setup application data and used functionnalities
+Setup application data and used functionalities
 """
 
 import os
@@ -16,6 +16,7 @@ def do_reload(state):
         return None
     to_reload = {}
     for key, handlers in tuple(R.handlers.items()):
+        # Remove hooks from reloaded modules
         trimmed = []
         for priority, index, fct in handlers:
             if fct.__module__ not in to_reload:
