@@ -1,0 +1,7 @@
+TODO List
+
+  * Remove copy/paste for 'running'. Rename it 'threads'.
+    Manage it in the main.
+
+  * Home page : use handler to define the full page.
+    @R.handler('home_page', item=(column_index, row_index, style))
