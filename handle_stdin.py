@@ -1,11 +1,16 @@
 #!/usr/bin/python3
 
 """
-Handle stdin
+Handle stdin for the CLI
+Launch a thread to read and evaluate stdin.
+Displays timer events.
+Displays syntax error if nobody evaluated the command.
 """
 import sys
 import threading
 from reactor import R
+
+running = []
 
 @R.handler('START')
 def _start(_state):
@@ -14,7 +19,10 @@ def _start(_state):
         """Thread reading the stdin"""
         def run(self):
             """Send 'eval' event on line read"""
+            running.append(self)
             for line in sys.stdin:
+                if not running:
+                    break
                 R('print', string=R('eval', command=line.strip(), file=sys.stdout))
     R('print', string="[[[stdin_start]]]")
     StdinReader().start()
@@ -45,3 +53,10 @@ def translations(state):
     state.translations['fr']['stdin_timer'] = "Événement périodique"
     state.translations['en']['stdin_start'] = "Hit 'h' <enter> to print help."
     state.translations['fr']['stdin_start'] = "Tapez 'h' puis Entrée pour afficher l'aide."
+
+@R.handler('BEFORE_RELOAD')
+@R.handler('BEFORE_DISABLE')
+def stop_thread(state):
+    """Stop the thread."""
+    if state.functionality == __name__:
+        running.pop()

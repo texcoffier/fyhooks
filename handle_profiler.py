@@ -1,5 +1,6 @@
 """
-Expression evaluator
+Display an execution profile of the «get» handler.
+This works only with the HTTP server.
 """
 
 import codecs

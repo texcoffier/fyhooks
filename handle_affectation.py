@@ -1,5 +1,6 @@
 """
-Affection handler
+Affection handler.
+It allows to write «foo = 'bar'» on command line.
 """
 
 from reactor import R

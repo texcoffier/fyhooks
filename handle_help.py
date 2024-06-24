@@ -1,5 +1,7 @@
 """
-Display help
+Help page management.
+It allows the other functionalities to add their messages,
+Add the command displaying all the help messages.
 """
 
 from reactor import R
@@ -21,7 +23,7 @@ def print_help(state):
 @R.handler('translations')
 def translations(state):
     "Translations"
-    state.translations['en']['help_help'] = "print this help"
-    state.translations['fr']['help_help'] = "affiche ce message d'aide"
+    state.translations['en']['help_help'] = "Print this help"
+    state.translations['fr']['help_help'] = "Affiche ce message d'aide"
     state.translations['en']['help_cmd'] = "Commands:\n"
     state.translations['fr']['help_cmd'] = "Commandes :\n"

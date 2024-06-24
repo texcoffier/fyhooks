@@ -1,5 +1,8 @@
 """
-HTTP server
+HTTP server.
+It calls 'http' to allows functionalities to add HTTP headers.
+It calls 'get' to retrieve the content to be displayed.
+It calls 'print' to display the page content.
 """
 
 import codecs

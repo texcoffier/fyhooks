@@ -1,5 +1,7 @@
 """
-HTTP Request timer
+HTTP Request timer.
+The request starts when the «get» event is received.
+Add the request time once the translation are done.
 """
 
 import time

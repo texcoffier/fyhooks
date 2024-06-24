@@ -1,5 +1,7 @@
 """
-Handle translation
+Handle translations
+Add buttons to the Web interface to change language.
+Add a dump command to display all translations.
 """
 
 from typing import Dict

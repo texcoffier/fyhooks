@@ -1,10 +1,13 @@
 """
-Display log in realtime
+Display log in realtime using a thread.
+It tells the web server to keep the connection open.
 """
 
 import time
 import threading
 from reactor import R
+
+running = []
 
 def start(output):
     """Launch the thread"""
@@ -12,9 +15,10 @@ def start(output):
         """The display run in a thread"""
         def run(self):
             """Start the server"""
+            running.append(self)
             history = R.M.history
             i = len(history)
-            while True:
+            while running:
                 while i < len(history):
                     R("print", string=history[i], file=output)
                     i += 1
@@ -41,7 +45,14 @@ def print_help(state):
 @R.handler('translations')
 def translations(state):
     "Translations"
-    state.translations['en']['log_help'] = "live log display"
-    state.translations['fr']['log_help'] = "affiche les log en temps réel"
+    state.translations['en']['log_help'] = "Live log display"
+    state.translations['fr']['log_help'] = "Affiche les logs en temps réel"
     state.translations['en']['log_started'] = "Live log started"
     state.translations['fr']['log_started'] = "L'affichage des logs en temps réel a commencé"
+
+@R.handler('BEFORE_RELOAD')
+@R.handler('BEFORE_DISABLE')
+def stop_thread(state):
+    """Stop the thread."""
+    if state.functionality == __name__:
+        running.pop()

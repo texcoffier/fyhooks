@@ -1,5 +1,7 @@
 """
-Setup application data and used functionalities
+Reload modified functionalities on disk.
+Send events BEFORE_RELOAD before each unloading
+and RELOAD after all the reloading are done.
 """
 
 import os
@@ -7,6 +9,8 @@ import sys
 import importlib
 from reactor import R
 
+R.description('BEFORE_RELOAD',
+    'Arguments: state.functionnality\nEvent send just before reloading the functionnality')
 R.description("RELOAD", "Arguments: None\nCalled after a Python module reload")
 
 @R.handler('eval')
@@ -26,6 +30,7 @@ def do_reload(state):
                 else:
                     must_reload = (os.path.getmtime(module.__spec__.cached)
                                  < os.path.getmtime(module.__spec__.origin))
+                R('BEFORE_RELOAD', functionality=fct.__module__)
                 to_reload[fct.__module__] = must_reload
             if not to_reload[fct.__module__]:
                 trimmed.append((priority, index, fct))
@@ -33,8 +38,9 @@ def do_reload(state):
     for module, must_reload in to_reload.items():
         if must_reload:
             importlib.reload(sys.modules[module])
+    R.update_handlers()
     R('RELOAD')
-    return 'Reloaded: ' + ' '.join(module
+    return '[[[reloaded]]] ' + ' '.join(module
                                    for module, must_reload in to_reload.items()
                                    if must_reload)
 
@@ -46,10 +52,12 @@ def print_help(state):
 @R.handler('translations')
 def translations(state):
     "Translations"
-    state.translations['en']['reload_help'] = "reload modified Python modules"
-    state.translations['fr']['reload_help'] = "reactualise les modules Python qui ont été modifiés"
+    state.translations['en']['reload_help'] = "Reload modified Python modules"
+    state.translations['fr']['reload_help'] = "Réactualise les modules Python qui ont été modifiés"
     state.translations['en']['reload_button'] = "Reload Python modules"
     state.translations['fr']['reload_button'] = "Recharge les modules Python"
+    state.translations['en']['reloaded'] = "Reloaded:"
+    state.translations['fr']['reloaded'] = "Rechargé :"
 
 @R.handler('buttons', 'Z')
 def reload(state):

@@ -44,6 +44,12 @@ class Reactor:
         Reactor.priority += 1
         self.sorted_handlers[event_type] = [handler[2] for handler in handlers]
 
+    def update_handlers(self):
+        """Update all handlers"""
+        for event_type, handlers in self.handlers.items():
+            handlers.sort()
+            self.sorted_handlers[event_type] = [handler[2] for handler in handlers]
+
     def __call__(self, event_type: EventType, **kargs) -> Any:
         """Send event"""
         state = State(event_type, kargs)
@@ -82,11 +88,11 @@ class Reactor:
             text.append(label + description[0])
             for line in description[1:]:
                 text.append(indent + line.strip())
-            text.append('    PRIORITY   FILE                     FUNCTION')
+            text.append('  PRIORITY   FILE                     FUNCTION')
             for priority, index, fct in handlers:
                 filename = fct.__code__.co_filename.split("/")[-1]
                 fctname = fct.__code__.co_name
-                text.append(f'    {priority+"."+str(index):<10} {filename:25}{fctname}')
+                text.append(f'  {priority+"."+str(index):<10} {filename:25}{fctname}')
         return '\n'.join(text)
 
 R = Reactor()

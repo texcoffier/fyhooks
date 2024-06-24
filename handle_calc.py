@@ -1,5 +1,6 @@
 """
-Expression evaluator
+Expression evaluator.
+It returns the result of the Python 'eval'.
 """
 
 from reactor import R
@@ -9,7 +10,7 @@ def calc(state):
     """Evaluate the expression and returns it.
     If there is no error, stop the event and return the value."""
     try:
-        return eval(state.command, {}, R.M.variables) # pylint: disable=eval-used
+        return str(eval(state.command, {}, R.M.variables)) # pylint: disable=eval-used
     except: # pylint: disable=bare-except
         return None # For example if affectation
 
@@ -21,5 +22,5 @@ def print_help(state):
 @R.handler('translations')
 def translations(state):
     "Translations"
-    state.translations['en']['calc_help'] = "print the evaluation result"
-    state.translations['fr']['calc_help'] = "affiche le résultat de l'évaluation"
+    state.translations['en']['calc_help'] = "Print the evaluation result"
+    state.translations['fr']['calc_help'] = "Affiche le résultat de l'évaluation"

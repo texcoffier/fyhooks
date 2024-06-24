@@ -1,5 +1,6 @@
 """
-Web Home page for the application
+Web Home page for the application.
+It allows other functionalities to add buttons on the interface.
 """
 
 from reactor import R
@@ -11,7 +12,7 @@ R.description("buttons", """Arguments: state.buttons
 @R.handler('http')
 def http(state):
     """Set the good HTTP header"""
-    # Should not be done has TRANSLATIONS because the path may be complex
+    # Should not be done as TRANSLATIONS because the path may be complex
     if state.server.path == '/index.html':
         state.server.send_header('Content-Type', 'text/html; charset=UTF-8')
         return True
@@ -30,10 +31,11 @@ def home(state):
                  vertical-align: top; overflow: auto}
     BODY > DIV > DIV { overflow: auto; white-space: pre;}
     DIV#output { white-space: pre;}
-    BODY > DIV > DIV:nth-child(1) { height: 15%; background: #EFF;  white-space:normal }
-    BODY > DIV > DIV:nth-child(2) { height: 45%; background: #F8F8F8 }
-    BODY > DIV > DIV:nth-child(3) { height: 25%; background: #FEF }
-    BODY > DIV > DIV:nth-child(4) { height: 15%; background: #FFE }
+    BODY > DIV > DIV:nth-child(1) { height: 11%; background: #DFF;  white-space:normal }
+    BODY > DIV > DIV:nth-child(2) { height: 35%; background: #F8F8F8 }
+    BODY > DIV > DIV:nth-child(3) { height: 23%; background: #FDF }
+    BODY > DIV > DIV:nth-child(4) { height: 5%; background: #FFD }
+    BODY > DIV > DIV:nth-child(5) { height: 26%; background: #DDF }
     BODY > DIV:nth-child(1) { width: 36vw; overflow: hidden; white-space:normal }
     BODY > DIV:nth-child(2) { width: 22vw; background: #FEE }
     BODY > DIV:nth-child(3) { width: 19vw; background: #EFE }
@@ -53,7 +55,7 @@ function send_command(input) {
         cmd = '/PROFILE' + cmd;        
     output.setAttribute('src', cmd);
     load_data(output);
-    setTimeout(function() { document.getElementById('pm'); }, 200);
+    setTimeout(function() { input.value = ''; }, 200);
 }
 function load_data(div) {
     var url = div.getAttribute('src');
@@ -62,7 +64,14 @@ function load_data(div) {
     var xhr = new XMLHttpRequest();
     xhr.addEventListener('readystatechange',
         function(event) {
-            div.innerHTML = event.target.responseText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            if ( event.target.responseText.indexOf('[[[RELOAD_HOME]]]') != -1 ) {
+                window.location.reload();
+                }
+            div.innerHTML = event.target.responseText
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                ;
             })
     xhr.open("GET", url);
     xhr.send();
@@ -78,7 +87,7 @@ function load_data(div) {
         [[[home_command]]] (<label><input id="profile" type="checkbox"> Profile</label>)
         <input style="width:100%" onchange="send_command(this)">
         [[[home_result]]]
-        </div><div id="output" style="background:#F8F8F8"></div><div src="/h"></div><div id="pm" src="/pm"></div>
+        </div><div id="output" style="background:#F8F8F8"></div><div src="/h"></div><div id="pm" src="/pm"></div><div id="pf" src="/pf"></div>
     </div><div src="/pr"></div><div src="/l"></div><div src="/pt"></div>
 <script>
 var divs = document.getElementsByTagName('DIV');
@@ -100,3 +109,9 @@ def translations(state):
     state.translations['fr']['home_command'] = "Saisissez une commande à évaluer"
     state.translations['en']['home_result'] = "The evaluation result:"
     state.translations['fr']['home_result'] = "Le résultat de l'évaluation :"
+
+@R.handler('print', '0')
+def add_reload_home(state):
+    """Do reload home page on functionality reload or disable"""
+    for i in ('[[[reloaded]]]', '[[[disabled]]]'):
+        state.string = state.string.replace(i, i + '[[[RELOAD_HOME]]]')

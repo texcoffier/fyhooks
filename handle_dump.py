@@ -1,5 +1,7 @@
 """
-Debugger
+Dumpers.
+Displays information about the application.
+It enables the commands starting with the letter «p» as «print»
 """
 
 from reactor import R
@@ -34,5 +36,5 @@ def translations(state):
     state.translations['fr']['dump_m'] = "Liste des structures de données de l'application"
     state.translations['en']['dump_h'] = "History of event"
     state.translations['fr']['dump_h'] = "Historique des événements"
-    state.translations['en']['dump_r'] = "Reactor handlers list"
-    state.translations['fr']['dump_r'] = "Liste des gestionnaires d'événements"
+    state.translations['en']['dump_r'] = "Used reactor handlers list"
+    state.translations['fr']['dump_r'] = "Liste des gestionnaires d'événements utilisés"
