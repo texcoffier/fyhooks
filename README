@@ -54,8 +54,8 @@ Theses are some of the event type defined in the example application:
     R('PRESTART')             # Initialisation of the functionalities
     R('START')                # Start the functionalities
     R('RELOAD')               # Some Python modules have been reload
-    R('print', string=, file=)
-    R('eval', command=, file=, server=) # file and server are needed for live log
+    R('print', string=, wfile=)
+    R('eval', command=, wfile=, server=) # file and server are needed for live log
     R('translations', translations=)
     R('help', help=)
     R('get', server=)         # request analyser (in order to be stackable)

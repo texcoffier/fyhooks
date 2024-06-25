@@ -17,14 +17,14 @@ def _start(_state):
         for line in sys.stdin:
             if not running:
                 break
-            R('print', string=R('eval', command=line.strip(), file=sys.stdout))
+            R('print', string=R('eval', command=line.strip(), wfile=sys.stdout))
     R('print', string="[[[stdin_start]]]")
     R('start_thread', function=stdin_reader)
 
 @R.handler('print')
 def _print(state):
     """Print on stdout or the given file"""
-    print(state.string, file=getattr(state, 'file', sys.stdout))
+    print(state.string, file=getattr(state, 'wfile', sys.stdout))
 
 @R.handler('timer')
 def _timer(_state):

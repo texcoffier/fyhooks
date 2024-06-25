@@ -56,8 +56,8 @@ def _get(state):
     server.send_header('Cache-Control', 'no-store')
     server.end_headers()
     wfile = codecs.getwriter("utf-8")(server.wfile)
-    result = R('eval', command=url, file=wfile, server=server)
-    R('print', string=result, file=wfile, server=server)
+    result = R('eval', command=url, wfile=wfile, server=server)
+    R('print', string=result, wfile=wfile, server=server)
 
 @R.handler('translations')
 def translations(state):

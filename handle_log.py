@@ -14,7 +14,7 @@ def start(output):
         i = len(history)
         while running:
             while i < len(history):
-                R("print", string=history[i], file=output)
+                R("print", string=history[i], wfile=output)
                 i += 1
             output.flush()
             time.sleep(0.1)
@@ -24,7 +24,7 @@ def start(output):
 def logs(state):
     """Live log stream display"""
     if state.command == 'l':
-        start(state.file)
+        start(state.wfile)
         server = getattr(state, 'server', None)
         if server:
             server.do_not_close = True
