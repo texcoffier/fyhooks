@@ -22,6 +22,7 @@ import handle_log
 import handle_request_time
 import handle_profiler
 import handle_functionality
+import handle_graph
 
 class Model: # pylint: disable=too-few-public-methods
     """The model"""

@@ -16,7 +16,7 @@ def start_timer(state):
 def stop_timer(state):
     """Add the duration to the printed string"""
     server = getattr(state, 'server', None)
-    if server:
+    if server and not state.string.startswith('<'):
         state.string += f'''[[[DIV style="color:#888; right: 0; bottom: 0; position: absolute"]]]
             {1000*(time.time() - server.start_time):.1f}ms[[[/DIV]]]'''
 

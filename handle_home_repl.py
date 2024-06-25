@@ -24,7 +24,7 @@ function send_command(input) {
         [[[home_result]]]
         <div id="output" style="white-space: pre; font-family: monospace, monospace"></div>
         '''
-    css = """DIV.C0 { display: flex; flex-direction: column; height: calc(100vh - 10px)}
+    css = """DIV.C0 { display: flex; flex-direction: column; height: 100vh}
     <.> { flex: 1; overflow: auto }
     """
     state.items.append({'column': 'C0', 'row': 'R1', 'html': html, 'js': js_function, 'css': css})

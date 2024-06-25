@@ -48,4 +48,5 @@ def home_dump(state):
          'css': pre + 'background: #DDF}'})
     state.items.append(
         {'column': 'C9', 'row': 'R90', 'html': 'PR', 'src': '/pr',
-         'css': '<.> { font-family:monospace, monospace; white-space: pre;background: #DDF}'})
+         'css': '<.> { font-family:monospace, monospace;'
+                      'white-space: pre;background: #DDF; height: 100vh}'})

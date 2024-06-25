@@ -29,7 +29,8 @@ def home(state):
     items = []
     R('home_page', items=items)
     css = ['''
-    BODY > DIV { display: flex }
+    BODY { margin: 0px; overflow: hidden }
+    BODY > DIV { display: flex; }
     BODY > DIV > DIV { display: inline-block; overflow: auto; vertical-align: top }
     BODY > DIV > DIV > DIV { position: relative }
     BODY > DIV > DIV > DIV > H2 { margin: 2px }
@@ -45,6 +46,10 @@ def home(state):
                 if ( event.target.responseText.indexOf('[[[RELOAD_HOME]]]') != -1 ) {
                     window.location.reload();
                     }
+                if(event.target.responseText.substr(0, 1) == '<') {
+                    div.innerHTML = event.target.responseText;
+                    return;
+                }
                 var content = event.target.responseText
                     .replace(/&/g, '&amp;')
                     .replace(/</g, '&lt;')
