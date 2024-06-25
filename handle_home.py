@@ -8,7 +8,8 @@ from reactor import R
 
 R.description('home_page', """Arguments: state.items
 Append HTML elements to display, each element is defined by a dictionary:
-{'column': str, 'row': str, 'html': str, 'src': str, 'css': str, 'js': str, 'title': True}
+{'column': str, 'row': str, 'html': str, 'src': str, 'css': str, 'js': str,
+ 'title': True, 'attributes': 'onclick="..." onmouseenter="..."'}
 'column' and 'row' must be valid HTML class names
 """)
 
@@ -40,12 +41,20 @@ def home(state):
         var url = div.getAttribute('src');
         if ( ! url )
             return;
-        var xhr = new XMLHttpRequest();
+        console.log("Reload " + url);
+        var xhr = div.xhr;
+        if (!xhr)
+            xhr = new XMLHttpRequest();
+        div.xhr = xhr;
         xhr.addEventListener('readystatechange',
             function(event) {
+                if (event.target.readyState != 3)
+                    return;
                 if ( event.target.responseText.indexOf('[[[RELOAD_HOME]]]') != -1 ) {
                     window.location.reload();
                     }
+                console.log("Receive " + event.target.responseText.length
+                    + " bytes for " + url);
                 if(event.target.responseText.substr(0, 1) == '<') {
                     div.innerHTML = event.target.responseText;
                     return;
@@ -71,18 +80,19 @@ def home(state):
         css.append(item.get('css', '').replace('<.>', f'BODY > DIV > DIV.{column} > DIV.{row}'))
         js_function.append(item.get('js', ''))
         html = item.get('html', '')
+        attributes = item.get('attributes', '')
         src = item.get('src', '')
         if src:
             html += f'<SCRIPT>load_data(document.getElementById("i{i}"))</SCRIPT>'
-        columns[column][row] = (html, i, src)
+        columns[column][row] = (html, i, src, attributes)
     content = ['<STYLE>', ''.join(css), '</STYLE>',
                '<SCRIPT>', '\n'.join(js_function), '</SCRIPT>',
                '<DIV>'
                ]
     for column_class, cells in sorted(columns.items()):
         content.append(f'<DIV class="{column_class}">')
-        for cell_class, (html, i, src) in sorted(cells.items()):
-            content.append(f'<DIV class="{cell_class}" id="i{i}" src="{src}">')
+        for cell_class, (html, i, src, attributes) in sorted(cells.items()):
+            content.append(f'<DIV class="{cell_class}" id="i{i}" src="{src}" {attributes}>')
             content.append(html)
             content.append('</DIV>')
         content.append('</DIV>')
