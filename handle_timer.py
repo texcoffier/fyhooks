@@ -2,26 +2,19 @@
 Send timer event every 10 seconds
 """
 
-import threading
 import time
 from reactor import R
 
 R.description('timer', 'Arguments: None\nThe event is sent every 10 seconds.')
 
-running = []
-
 @R.handler('START')
 def _start(_state):
-    """Launch the thread"""
-    class Timer(threading.Thread):
-        """Start a timer thread"""
-        def run(self):
-            """Send 'timer' event"""
-            running.append(self)
-            while running:
-                R('timer')
-                time.sleep(10)
-    Timer().start()
+    """Start a timer thread"""
+    def timer(running):
+        while running:
+            R('timer')
+            time.sleep(10)
+    R('start_thread', function=timer)
 
 @R.handler('timer')
 def _timer(_state):
@@ -39,10 +32,3 @@ def translations(state):
     # pylint: disable=line-too-long
     state.translations['en']['timer_help'] = "A timer will display a message every 10 seconds"
     state.translations['fr']['timer_help'] = "Une tâche périodique affiche un message toutes les 10 secondes"
-
-@R.handler('BEFORE_RELOAD')
-@R.handler('BEFORE_DISABLE')
-def stop_thread(state):
-    """Stop the thread."""
-    if state.functionality == __name__:
-        running.pop()

@@ -30,7 +30,8 @@ def do_reload(state):
                 else:
                     must_reload = (os.path.getmtime(module.__spec__.cached)
                                  < os.path.getmtime(module.__spec__.origin))
-                R('BEFORE_RELOAD', functionality=fct.__module__)
+                    if must_reload:
+                        R('BEFORE_RELOAD', functionality=fct.__module__)
                 to_reload[fct.__module__] = must_reload
             if not to_reload[fct.__module__]:
                 trimmed.append((priority, index, fct))

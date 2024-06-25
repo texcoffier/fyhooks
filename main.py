@@ -12,6 +12,7 @@ import handle_affectation
 import handle_dump
 import handle_reload
 import handle_translations
+import handle_thread
 import handle_timer
 import handle_http
 import handle_home
