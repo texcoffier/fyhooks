@@ -43,3 +43,10 @@ def translations(state):
     state.translations['fr']['log_help'] = "Affiche les logs en temps réel"
     state.translations['en']['log_started'] = "Live log started"
     state.translations['fr']['log_started'] = "L'affichage des logs en temps réel a commencé"
+
+@R.handler('home_page')
+def home_log(state):
+    """Add the real time log display on home page"""
+    state.items.append(
+        {'column': 'C2', 'row': 'R1', 'html': 'LOGS', 'src': '/l',
+         'css': '<.> { font-family:monospace, monospace; white-space: pre; background: #DFF}'})

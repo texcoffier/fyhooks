@@ -17,4 +17,16 @@ def stop_timer(state):
     """Add the duration to the printed string"""
     server = getattr(state, 'server', None)
     if server:
-        state.string += f'\n{1000*(time.time() - server.start_time):.1f}ms'
+        state.string += f'''[[[DIV style="color:#888; right: 0; bottom: 0; position: absolute"]]]
+            {1000*(time.time() - server.start_time):.1f}ms[[[/DIV]]]'''
+
+@R.handler('buttons', 'Y')
+def reload(state):
+    """Add button to disable the request time display"""
+    state.buttons.append(('/df handle_request_time', '[[[hide_request_time]]]'))
+
+@R.handler('translations')
+def translations(state):
+    "Translations"
+    state.translations['en']['hide_request_time'] = "Hide request time"
+    state.translations['fr']['hide_request_time'] = "Cache le temps CPU"

@@ -58,3 +58,10 @@ def translations(state):
     state.translations['fr']['disabled'] = "Désactivée :"
     state.translations['en']['dump_f'] = "Functionalities list"
     state.translations['fr']['dump_f'] = "Liste des fonctionnalités"
+
+@R.handler('home_page')
+def home_help(state):
+    """Add the functionality list on home page"""
+    state.items.append(
+        {'column': 'C6', 'row': 'R9', 'html': 'FCTY', 'src': '/pf',
+         'css': '<.> { font-family:monospace, monospace; white-space: pre; background: #FDF;}'})

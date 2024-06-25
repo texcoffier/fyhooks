@@ -1,4 +1,6 @@
 TODO List
 
-  * Home page : use handler to define the full page.
-    @R.handler('home_page', item=(column_index, row_index, style))
+  * Display the graph of dependancies.
+
+  * Write an article
+  

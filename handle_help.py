@@ -27,3 +27,10 @@ def translations(state):
     state.translations['fr']['help_help'] = "Affiche ce message d'aide"
     state.translations['en']['help_cmd'] = "Commands:\n"
     state.translations['fr']['help_cmd'] = "Commandes :\n"
+
+@R.handler('home_page')
+def home_help(state):
+    """Add the list of commands on home page"""
+    state.items.append(
+        {'column': 'C0', 'row': 'R2', 'html': 'HELP', 'src': '/h',
+         'css': '<.> { font-family:monospace, monospace; white-space: pre; background: #DFD}'})

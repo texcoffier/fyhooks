@@ -1,13 +1,16 @@
 """
 Web Home page for the application.
-It allows other functionalities to add buttons on the interface.
+It allows other functionalities to add block on the interface.
 """
 
+import collections
 from reactor import R
 
-R.description("buttons", """Arguments: state.buttons
-                            Called on home page initialization.
-                            You append your buttons [command, label] to state.buttons""")
+R.description('home_page', """Arguments: state.items
+Append HTML elements to display, each element is defined by a dictionary:
+{'column': str, 'row': str, 'html': str, 'src': str, 'css': str, 'js': str, 'title': True}
+'column' and 'row' must be valid HTML class names
+""")
 
 @R.handler('http')
 def http(state):
@@ -23,95 +26,65 @@ def home(state):
     """Home page"""
     if state.command != 'index.html':
         return None
-    content = ['''
-<style>
-    BODY { box-sizing: border-box; margin: 0px; overflow: hidden }
-    BODY, INPUT, BUTTON { font-family: monospace,monospace; font-size: 0.7vw; }
-    BODY > DIV { display: inline-block; height: 100%; white-space: pre;
-                 vertical-align: top; overflow: auto}
-    BODY > DIV > DIV { overflow: auto; white-space: pre;}
-    DIV#output { white-space: pre;}
-    BODY > DIV > DIV:nth-child(1) { height: 11%; background: #DFF;  white-space:normal }
-    BODY > DIV > DIV:nth-child(2) { height: 35%; background: #F8F8F8 }
-    BODY > DIV > DIV:nth-child(3) { height: 23%; background: #FDF }
-    BODY > DIV > DIV:nth-child(4) { height: 5%; background: #FFD }
-    BODY > DIV > DIV:nth-child(5) { height: 26%; background: #DDF }
-    BODY > DIV:nth-child(1) { width: 36vw; overflow: hidden; white-space:normal }
-    BODY > DIV:nth-child(2) { width: 22vw; background: #FEE }
-    BODY > DIV:nth-child(3) { width: 19vw; background: #EFE }
-    BODY > DIV:nth-child(4) { width: 23vw; background: #EEF }
-</style>
-<script>
-function do_reload(cmd) {
-    var img = document.createElement('IMG');
-    img.src = cmd;
-    document.body.appendChild(img);
-    setTimeout(function() { location.reload(); }, 100);
-}
-function send_command(input) {
-    var cmd = '/' + encodeURIComponent(input.value);
-    var output = document.getElementById('output');
-    if ( document.getElementById('profile').checked )
-        cmd = '/PROFILE' + cmd;        
-    output.setAttribute('src', cmd);
-    load_data(output);
-    setTimeout(function() { input.value = ''; }, 200);
-}
-function load_data(div) {
-    var url = div.getAttribute('src');
-    if ( ! url )
-        return;
-    var xhr = new XMLHttpRequest();
-    xhr.addEventListener('readystatechange',
-        function(event) {
-            if ( event.target.responseText.indexOf('[[[RELOAD_HOME]]]') != -1 ) {
-                window.location.reload();
-                }
-            div.innerHTML = event.target.responseText
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                ;
-            })
-    xhr.open("GET", url);
-    xhr.send();
-}
-</script>
-<div><div>''']
-    buttons = []
-    R('buttons', buttons=buttons)
-    for url, label in buttons:
-        content.append(f'<button onclick="do_reload(\'{url}\')">{label}</button> ')
-    content.append('''
-        <p>
-        [[[home_command]]] (<label><input id="profile" type="checkbox"> Profile</label>)
-        <input style="width:100%" onchange="send_command(this)">
-        [[[home_result]]]
-        </div><div id="output" style="background:#F8F8F8"></div><div src="/h"></div><div id="pm" src="/pm"></div><div id="pf" src="/pf"></div>
-    </div><div src="/pr"></div><div src="/l"></div><div src="/pt"></div>
-<script>
-var divs = document.getElementsByTagName('DIV');
-for(var div of divs)
-    load_data(div);
-</script>
-        ''')
+    items = []
+    R('home_page', items=items)
+    css = ['''
+    BODY > DIV { display: flex }
+    BODY > DIV > DIV { display: inline-block; overflow: auto; vertical-align: top }
+    BODY > DIV > DIV > DIV { position: relative }
+    BODY > DIV > DIV > DIV > H2 { margin: 2px }
+    ''']
+    js_function = ['''
+    function load_data(div) {
+        var url = div.getAttribute('src');
+        if ( ! url )
+            return;
+        var xhr = new XMLHttpRequest();
+        xhr.addEventListener('readystatechange',
+            function(event) {
+                if ( event.target.responseText.indexOf('[[[RELOAD_HOME]]]') != -1 ) {
+                    window.location.reload();
+                    }
+                var content = event.target.responseText
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/\\[\\[\\[/g, '<')
+                    .replace(/\\]\\]\\]/g, '>')
+                    .split('\\n')
+                    ;
+                div.innerHTML = '<H2>' + content[0] + '</H2>' + content.slice(1).join('\\n');
+                })
+        xhr.open("GET", url);
+        xhr.send();
+        }''']
+
+    columns = collections.defaultdict(dict)
+    for i, item in enumerate(items):
+        column = item.get('column', '')
+        row = item.get('row', '')
+        css.append(item.get('css', '').replace('<.>', f'BODY > DIV > DIV.{column} > DIV.{row}'))
+        js_function.append(item.get('js', ''))
+        html = item.get('html', '')
+        src = item.get('src', '')
+        if src:
+            html += f'<SCRIPT>load_data(document.getElementById("i{i}"))</SCRIPT>'
+        columns[column][row] = (html, i, src)
+    content = ['<STYLE>', ''.join(css), '</STYLE>',
+               '<SCRIPT>', '\n'.join(js_function), '</SCRIPT>',
+               '<DIV>'
+               ]
+    for column_class, cells in sorted(columns.items()):
+        content.append(f'<DIV class="{column_class}">')
+        for cell_class, (html, i, src) in sorted(cells.items()):
+            content.append(f'<DIV class="{cell_class}" id="i{i}" src="{src}">')
+            content.append(html)
+            content.append('</DIV>')
+        content.append('</DIV>')
+    content.append('</DIV><DIV>')
     return ''.join(content)
 
 @R.handler('START', 'N')
 def _start(_state):
     "help"
     R('print', string="[[[http_start]]] http://127.0.0.1:8888/index.html")
-
-@R.handler('translations')
-def translations(state):
-    "Translations"
-    state.translations['en']['home_command'] = "Enter a command to evaluate"
-    state.translations['fr']['home_command'] = "Saisissez une commande à évaluer"
-    state.translations['en']['home_result'] = "The evaluation result:"
-    state.translations['fr']['home_result'] = "Le résultat de l'évaluation :"
-
-@R.handler('print', '0')
-def add_reload_home(state):
-    """Do reload home page on functionality reload or disable"""
-    for i in ('[[[reloaded]]]', '[[[disabled]]]'):
-        state.string = state.string.replace(i, i + '[[[RELOAD_HOME]]]')

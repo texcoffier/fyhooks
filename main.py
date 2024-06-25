@@ -16,6 +16,8 @@ import handle_thread
 import handle_timer
 import handle_http
 import handle_home
+import handle_home_repl
+import handle_home_buttons
 import handle_log
 import handle_request_time
 import handle_profiler
