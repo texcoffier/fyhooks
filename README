@@ -35,8 +35,14 @@ The core idea:
 
        * From the sender to receivers.
        * From the receivers to the sender.
-       * From a receiver to later called one.
+       * From a receiver to a later called one.
        * A receiver can modify the information defined by a previous one.
+
+
+               send event type
+Functionality  --------------> dispatcher ---> handler 1 returns None
+                                          ---> handler 2 returns None
+               <------------------------------ Handler 3 returns a value
 
 -------------
 Documentation
@@ -51,6 +57,7 @@ Only one import needed :
 The main program defines the application full state as a global variable
 usable by any functionality.
 Concurrent modification of R.M is not thread safe: so protect it.
+Do not use R.M is it is possible to use event parameters.
 
     class MyModel:
         my_data = 2024
@@ -83,17 +90,16 @@ Add a description to the event type:
 Event types are not defined, their usage define their attributes.
 Theses are some of the event type defined in the example application:
 
-    R('PRESTART')             # Initialisation of the functionalities
-    R('START')                # Start the functionalities
-    R('RELOAD')               # Some Python modules have been reload
-    R('print', string=, wfile=)
+    R('PRESTART')                        # Initialisation of the functionalities
+    R('START')                           # Start the functionalities
+    R('print', string=, wfile=)          # Print something
     R('eval', command=, wfile=, server=) # file and server are needed for live log
-    R('translations', translations=)
-    R('help', help=)
-    R('get', server=)         # request analyser (in order to be stackable)
-    R('http', server=)        # send HTTP header if not default
-    R('buttons', buttons=)    # append tuple ('url', 'label') to add HTML buttons
-    R('timer')                # Event send every 10 seconds
+    R('translations', translations=)     # Get translation list
+    R('help', help=)                     # Get help message
+    R('get', server=)                    # request analyser (in order to be stackable)
+    R('http', server=)                   # send HTTP header if not default
+    R('buttons', buttons=)               # append tuple ('url', 'label') to add HTML buttons
+    R('timer')                           # Event send every 10 seconds
 
 To see the full list, use «pr» on command line.
 
