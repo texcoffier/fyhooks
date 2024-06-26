@@ -22,11 +22,7 @@ def counter(state):
     origin = cleanup(traceback.extract_stack()[-3].filename)
     ARCS[origin, state.event] += 1
 
-@R.handler('eval')
-def do_graph(state):
-    """Generate the graph"""
-    if state.command != 'pg':
-        return None
+def get_svg():
     def nice(txt):
         return txt.replace('_', '\n')
     fcties = '\n'.join(
@@ -42,7 +38,7 @@ def do_graph(state):
         for key, _handlers in tuple(R.handlers.items())
         if key not in HIDE
         )
-    arcs_in = '\n'.join(f'{origin} -> {goal} [label="{nbr}"]'
+    arcs_in = '\n'.join(f'{origin} -> {goal} [label="{nbr}" penwidth=3 color=blue]'
                         for (origin, goal), nbr in ARCS.items()
                         if origin not in HIDE and goal not in HIDE
                         )
@@ -59,13 +55,23 @@ def do_graph(state):
         svg = file.read()
     return svg
 
+@R.handler('eval')
+def do_graph(state):
+    """Generate the graph"""
+    if state.command != 'pg':
+        return None
+    return state.server.svg
+
 @R.handler('http')
 def http(state):
     """Set the good HTTP header"""
-    if state.server.path == '/pg':
+    if state.server.path != '/pg':
+        return None
+    state.server.svg = get_svg()
+    if '<svg' in state.server.svg:
         state.server.send_header('Content-Type', 'image/svg+xml; charset=UTF-8')
         return True
-    return None
+    state.server.svg = "[[[graphviz]]]"
 
 @R.handler('help', 'C')
 def print_help(state):
@@ -77,6 +83,8 @@ def translations(state):
     "Translations"
     state.translations['en']['help_graph'] = "Display call graph"
     state.translations['fr']['help_graph'] = "Affiche le graphe d'appel"
+    state.translations['en']['graphviz'] = "To see the call graph: [[[BR]]][[[TT]]]apt install graphviz[[[/TT]]]"
+    state.translations['fr']['graphviz'] = "Pour voir le graphe d'appel : [[[BR]]][[[TT]]]apt install graphviz[[[/TT]]]"
 
 @R.handler('home_page')
 def home_graph(state):

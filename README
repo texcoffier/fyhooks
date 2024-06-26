@@ -42,7 +42,9 @@ The core idea:
                send event type
 Functionality  --------------> dispatcher ---> handler 1 returns None
                                           ---> handler 2 returns None
-               <------------------------------ Handler 3 returns a value
+               <------------------------------ handler 3 returns a value
+
+The calling graph can be displayed on the web page (if graphviz is installed)
 
 -------------
 Documentation
