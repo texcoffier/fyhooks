@@ -8,8 +8,11 @@ from reactor import R
 R.description('timer', 'Arguments: None\nThe event is sent every 10 seconds.')
 
 @R.handler('START')
-def _start(_state):
+@R.handler('AFTER_RELOAD')
+def start(state):
     """Start a timer thread"""
+    if getattr(state, 'functionality', __name__) != __name__:
+        return
     def timer(running):
         while running:
             R('timer')

@@ -37,8 +37,9 @@ def print_help2(state):
     "help"
     state.help.append('  pt : [[[dump_t]]]')
 
-@R.handler('RELOAD')
-def _reload(_state):
+@R.handler('AFTER_RELOAD')
+def reload(_state):
+    """Compute translations: if 2 modules are reloaded they will be computed twice"""
     R('translations', translations=TRANSLATIONS)
 
 @R.handler('translations')

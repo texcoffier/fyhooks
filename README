@@ -95,8 +95,7 @@ Theses are some of the event type defined in the example application:
     R('buttons', buttons=)    # append tuple ('url', 'label') to add HTML buttons
     R('timer')                # Event send every 10 seconds
 
-The reloading of module having launched a thread will not restart the thread.
-But if the thread function only launch events, the new event handlers will be called.
+To see the full list, use «pr» on command line.
 
 To add a new button for a new functionality on the home page or command line,
 do not modify handle_home.py but create handle_xxx.py
@@ -108,7 +107,7 @@ do not modify handle_home.py but create handle_xxx.py
             return None
         # Do XXX
 
-    @R.handler('buttons', 'X') # X to be before Reload
+    @R.handler('buttons', 'W') # W to be before Reload (Z)
     def xxx(state):
         """Add XXX button on home page"""
         state.buttons.append(('/XXX', '[[[XXX_button]]]'))

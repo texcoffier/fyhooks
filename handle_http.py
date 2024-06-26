@@ -16,8 +16,11 @@ R.description('http', '''Arguments: state.url, state.server
 Answer to the URL if needed.''')
 
 @R.handler('START')
-def _start(_state):
+@R.handler('AFTER_RELOAD')
+def start(state):
     """Launch the thread"""
+    if getattr(state, 'functionality', __name__) != __name__:
+        return
     class HTTPServer(http.server.HTTPServer):
         """Do not close connection automaticaly"""
         old_shutdown_request = http.server.HTTPServer.shutdown_request
@@ -45,7 +48,7 @@ def _start(_state):
     HTTP().start()
 
 @R.handler('get')
-def _get(state):
+def get(state):
     """Manage the HTTP get"""
     server = state.server
     url = urllib.parse.unquote(server.path[1:])

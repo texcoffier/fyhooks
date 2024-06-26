@@ -11,7 +11,6 @@ from reactor import R
 
 R.description('BEFORE_RELOAD',
     'Arguments: state.functionnality\nEvent send just before reloading the functionnality')
-R.description("RELOAD", "Arguments: None\nCalled after a Python module reload")
 
 @R.handler('eval')
 def do_reload(state):
@@ -30,17 +29,16 @@ def do_reload(state):
                 else:
                     must_reload = (os.path.getmtime(module.__spec__.cached)
                                  < os.path.getmtime(module.__spec__.origin))
-                    if must_reload:
-                        R('BEFORE_RELOAD', functionality=fct.__module__)
                 to_reload[fct.__module__] = must_reload
             if not to_reload[fct.__module__]:
                 trimmed.append((priority, index, fct))
         R.handlers[key] = trimmed
     for module, must_reload in to_reload.items():
         if must_reload:
+            R('BEFORE_RELOAD', functionality=module)
             importlib.reload(sys.modules[module])
+            R('AFTER_RELOAD', functionality=module)
     R.update_handlers()
-    R('RELOAD')
     return '[[[reloaded]]] ' + ' '.join(module
                                    for module, must_reload in to_reload.items()
                                    if must_reload)

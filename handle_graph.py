@@ -27,14 +27,18 @@ def do_graph(state):
     """Generate the graph"""
     if state.command != 'pg':
         return None
+    def nice(txt):
+        return txt.replace('_', '\n')
     fcties = '\n'.join(
-        f'{fcty} [ color=blue shape=box ]'
+        f'{fcty} [ label="{nice(fcty)}" color=blue shape=cylinder ]'
         for fcty in set(fct.__module__
                         for key, handlers in tuple(R.handlers.items())
                         for priority, index, fct in handlers
                         if fct.__module__ not in HIDE))
+    def description(key):
+        return key + '\n' + R.handler_descriptions.get(key, "").replace('"', '\\"')
     handlers = '\n'.join(
-        f'{key} [ ]'
+        f'{key} [ label="{description(key)}" shape=box ]'
         for key, _handlers in tuple(R.handlers.items())
         if key not in HIDE
         )

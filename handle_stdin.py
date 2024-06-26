@@ -10,8 +10,11 @@ import sys
 from reactor import R
 
 @R.handler('START')
-def _start(_state):
+@R.handler('AFTER_RELOAD')
+def _start(state):
     """Start the stdin reader"""
+    if getattr(state, 'functionality', __name__) != __name__:
+        return
     def stdin_reader(running):
         """Send 'eval' event on line read"""
         for line in sys.stdin:
