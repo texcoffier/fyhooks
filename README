@@ -1,16 +1,48 @@
 =========================================
-Programming by functionality with events.
+Programming by functionality using events
 =========================================
 
+--------
+Preamble
+--------
 
+The core idea:
 
+   * One file per functionality so adding or removing a functionality
+     only change one file.
 
+   * Functionalities communicate using events.
 
+   * When an event is launched it is dispatched to all the handlers
+     of this event type.
+
+   * The handler has a state parameter.
+     This state can be used and modified.
+
+   * Functionalities add their handlers to event types.
+
+   * Functionalities send events. They can define the initial state.
+
+   * Sending an event returns the return value of the last called handler.
+
+   * Each handler has a priority, they are called in the order.
+    
+   * If an handler does not returns None then the other handlers
+     will not be called and the value will be returned to
+     the event sender.
+
+   * The information flow can be of any kind when an event is sent:
+
+       * From the sender to receivers.
+       * From the receivers to the sender.
+       * From a receiver to later called one.
+       * A receiver can modify the information defined by a previous one.
+
+-------------
+Documentation
+-------------
 
 To launch demo: ./main.py
-
-
-
 
 Only one import needed :
 
