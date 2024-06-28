@@ -28,6 +28,7 @@ class Reactor:
     """Manage handlers"""
     M:Any = None
     priority = 0
+    generic_handler:List[Tuple[EventHandler, Priority]] = []
     def __init__(self):
         self.handlers: Dict[EventType, List[Tuple[Priority, int, EventHandler]]] = {}
         self.sorted_handlers: Dict[EventType, List[EventHandler]] = {}
@@ -40,8 +41,14 @@ class Reactor:
         handlers = self.handlers[event_type]
         # Reactor.priority is here only to never compare 2 handler (sorting will fail)
         handlers.append((priority, Reactor.priority, handler))
+        Reactor.priority += 1            
+
+        # Apply previously defined generic handlers
+        for handler, priority in self.generic_handler:
+            handlers.append((priority, Reactor.priority, handler))
+            Reactor.priority += 1            
+
         handlers.sort()
-        Reactor.priority += 1
         self.sorted_handlers[event_type] = [handler[2] for handler in handlers]
 
     def update_handlers(self):
@@ -72,6 +79,7 @@ class Reactor:
             if event_type:
                 self.add(event_type, function, priority)
             else:
+                self.generic_handler.append((function, priority))
                 for event in self.handlers:
                     self.add(event, function, priority)
             return function

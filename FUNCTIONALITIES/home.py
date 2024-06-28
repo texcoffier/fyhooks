@@ -48,7 +48,7 @@ def home(state):
         div.xhr = xhr;
         xhr.addEventListener('readystatechange',
             function(event) {
-                if (event.target.readyState != 3)
+                if (event.target.readyState < 3)
                     return;
                 if ( event.target.responseText.indexOf('[[[RELOAD_HOME]]]') != -1 ) {
                     window.location.reload();
@@ -100,6 +100,6 @@ def home(state):
     return ''.join(content)
 
 @R.handler('START', 'N')
-def _start(_state):
+def start(_state):
     "help"
     R('print', string="[[[http_start]]] http://127.0.0.1:8888/index.html")

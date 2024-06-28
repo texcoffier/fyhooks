@@ -23,10 +23,10 @@ def stop_timer(state):
 @R.handler('buttons', 'Y')
 def reload(state):
     """Add button to disable the request time display"""
-    state.buttons.append(('/df handle_request_time', '[[[hide_request_time]]]'))
+    state.buttons.append(('/df request_time', '[[[hide_request_time]]]'))
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     state.translations['en']['hide_request_time'] = "Hide request time"
     state.translations['fr']['hide_request_time'] = "Cache le temps CPU"

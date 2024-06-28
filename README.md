@@ -87,6 +87,21 @@ of the running application.
 
 ![Application call graph](graph.svg)
 
+Legend:
+
+   * Cylinder: a file, each one define a functionality.
+
+   * Rectangle: an event type
+
+   * Blue arcs: functionality sending an event.
+     The number indicates the number of events sent.
+
+   * Black arcs: event dispatching to functionalities.
+     The label is the function name called in the functionality file.
+
+Some arcs are not displayed for clarity : `_help` `_translations` `_counter` `_record`
+in fact all the function names starting by `_`.
+All the functionalities receive `translations events.
 
 ## Documentation
 
@@ -154,7 +169,7 @@ R('timer')                           # Event send every 10 seconds
 To see the full list, use `pr` on command line.
 
 To add a new button for a new functionality on the home page or command line,
-do not modify `handle_home.py` but create `handle_xxx.py`
+do not modify `FUNCTIONALITIES/home.py` but create `FUNCTIONALITIES/xxx.py`
 
 ```python
 @R.handler('eval')

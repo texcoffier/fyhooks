@@ -18,12 +18,12 @@ def set_var(state):
         return None
 
 @R.handler('help')
-def print_help(state):
+def _help(state):
     "Help"
     state.help.append('  VARNAME=EXPRESSION [[[affectation_help]]]')
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     # pylint: disable=line-too-long
     state.translations['en']['affectation_help'] = "Evaluate the expression, store it and display it"

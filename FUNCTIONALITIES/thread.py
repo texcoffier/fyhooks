@@ -42,12 +42,12 @@ def do_thread(state):
     return '[[[dump_p]]]\n' + '\n'.join(f'{key}:{value}' for key, value in running.items())
 
 @R.handler('help', 'C3')
-def print_help(state):
+def _help(state):
     "help"
     state.help.append('  pp : [[[dump_p]]]')
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     state.translations['en']['dump_p'] = "Process list"
     state.translations['fr']['dump_p'] = "Liste des processus"

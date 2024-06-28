@@ -32,12 +32,12 @@ def logs(state):
     return None
 
 @R.handler('help', 'C2')
-def print_help(state):
+def _help(state):
     "help"
     state.help.append('  l : [[[log_help]]]')
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     state.translations['en']['log_help'] = "Live log display"
     state.translations['fr']['log_help'] = "Affiche les logs en temps réel"

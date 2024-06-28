@@ -22,7 +22,7 @@ def home_dump(state):
          'css': '<.> { background: #888; color: #FFF}'})
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     state.translations['en']['home_click'] = (
         "Click on a bloc to reload it. Double click to open it in a tab")

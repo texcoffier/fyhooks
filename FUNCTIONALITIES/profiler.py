@@ -19,7 +19,6 @@ def profile(state):
     if hasattr(server, 'profile'):
         return None # Profiling is currently done
     server.path = server.path.replace('/PROFILE', '')
-    server.profile = True
 
     profiler = cProfile.Profile(time.time)
     profiler.enable()
@@ -30,5 +29,5 @@ def profile(state):
     stats.strip_dirs().sort_stats('ncalls').print_stats(100)
 
     wfile = codecs.getwriter("utf-8")(server.wfile)
-    R('print', string=buffer.getvalue(), file=wfile)
+    R('print', string=buffer.getvalue(), wfile=wfile, server=server)
     return '' # Do not continue evaluation

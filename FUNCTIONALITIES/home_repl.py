@@ -30,7 +30,7 @@ function send_command(input) {
     state.items.append({'column': 'C0', 'row': 'R1', 'html': html, 'js': js_function, 'css': css})
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     state.translations['en']['home_command'] = "Enter a command to evaluate"
     state.translations['fr']['home_command'] = "Saisissez une commande à évaluer"

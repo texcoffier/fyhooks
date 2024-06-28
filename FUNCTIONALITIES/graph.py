@@ -10,44 +10,51 @@ from reactor import R
 
 ARCS:Dict[Tuple[str,str], int] = collections.defaultdict(int)
 
-HIDE = ('__main__', __name__, 'translations', 'help')
-
 def cleanup(filename):
     """Get the bare filename"""
     return filename.rsplit('/', 1)[-1].split('.')[0]
 
 @R.handler('', 'A')
-def counter(state):
+def _counter(state):
     """Increment the number of handler call"""
     origin = cleanup(traceback.extract_stack()[-3].filename)
     ARCS[origin, state.event] += 1
 
 def get_svg():
+    def node_id(txt):
+        return txt.split('.')[-1]
     def nice(txt):
-        return txt.replace('_', '\n')
+        return node_id(txt).replace('_', '\\n')
     fcties = '\n'.join(
-        f'{fcty} [ label="{nice(fcty)}" color=blue shape=cylinder ]'
+        f'F{node_id(fcty)} [ label="{nice(fcty)}" color=blue shape=cylinder ]'
         for fcty in set(fct.__module__
                         for key, handlers in tuple(R.handlers.items())
                         for priority, index, fct in handlers
-                        if fct.__module__ not in HIDE))
+                        if not fct.__name__.startswith('_')))
     def description(key):
-        return key + '\n' + R.handler_descriptions.get(key, "").replace('"', '\\"')
+        lines = R.handler_descriptions.get(key, "").strip().split('\n')
+        text = '<BR/>'.join(i.strip() for i in lines)
+        return f'<<TABLE CELLSPACING="0"><TR><TD>{key}</TD></TR><TR><TD>{text}</TD></TR></TABLE>>'
+
     handlers = '\n'.join(
-        f'{key} [ label="{description(key)}" shape=box ]'
+        f'H{key} [ label={description(key)} shape=none margin=0 ]'
         for key, _handlers in tuple(R.handlers.items())
-        if key not in HIDE
         )
-    arcs_in = '\n'.join(f'{origin} -> {goal} [label="{nbr}" penwidth=3 color=blue]'
+    arcs_in = '\n'.join(f'F{origin} -> H{goal} [label="{nbr}" penwidth=3 color=blue]'
                         for (origin, goal), nbr in ARCS.items()
-                        if origin not in HIDE and goal not in HIDE
                         )
-    arcs_out = '\n'.join(f'{key} -> {fct.__module__} [ label="{fct.__name__}"]'
+    arcs_out = '\n'.join(f'H{key} -> F{node_id(fct.__module__)} [ label="{fct.__name__}"]'
                          for key, handlers in tuple(R.handlers.items())
                          for priority, index, fct in handlers
-                         if key not in HIDE and fct.__module__ not in HIDE
+                         if not fct.__name__.startswith('_')
                         )
-    dot = 'digraph {edge [fontname="Helvetica"]\n' + fcties + '\n' + handlers + '\n' + arcs_in + '\n' + arcs_out + '\n}'
+    dot = ('digraph {edge [fontname="Helvetica"]\n'
+          + fcties + '\n'
+          + handlers + '\n'
+          + arcs_in + '\n'
+          + arcs_out + '\n'
+          + 'Fmain [ label="main" color=blue shape=cylinder ]' + '\n'
+          + '}')
     with open("xxx.dot", "w", encoding='utf-8') as file:
         file.write(dot)
     os.system("dot -Tsvg xxx.dot >xxx.svg")
@@ -60,6 +67,8 @@ def do_graph(state):
     """Generate the graph"""
     if state.command != 'pg':
         return None
+    if not hasattr(state, 'server'):
+        return get_svg()
     return state.server.svg
 
 @R.handler('http')
@@ -74,12 +83,12 @@ def http(state):
     state.server.svg = "[[[graphviz]]]"
 
 @R.handler('help', 'C')
-def print_help(state):
+def _help(state):
     "help"
     state.help.append('  pg : [[[help_graph]]]')
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     state.translations['en']['help_graph'] = "Display call graph"
     state.translations['fr']['help_graph'] = "Affiche le graphe d'appel"

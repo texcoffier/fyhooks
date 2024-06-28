@@ -63,7 +63,7 @@ def get(state):
     R('print', string=result, wfile=wfile, server=server)
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     state.translations['en']['http_start'] = "Server waiting on"
     state.translations['fr']['http_start'] = "Le serveur web est en attente à l'adresse"

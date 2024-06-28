@@ -15,12 +15,12 @@ def calc(state):
         return None # For example if affectation
 
 @R.handler('help')
-def print_help(state):
+def _help(state):
     "help"
     state.help.append('  EXPRESSION : [[[calc_help]]]')
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     state.translations['en']['calc_help'] = "Print the evaluation result"
     state.translations['fr']['calc_help'] = "Affiche le résultat de l'évaluation"

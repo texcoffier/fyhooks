@@ -17,7 +17,7 @@ def display_or_disable(state):
     """If disable functionnality command: do it"""
     if state.command == 'pf':
         def display(fct):
-            label = fct.__module__ + ' : '
+            label = fct.__module__.split('.')[-1] + ' : '
             indent = ' ' * len(label)
             lines = sys.modules[fct.__module__].__doc__.strip().split('\n')
             return label + lines.pop(0) + '\n' + ''.join(indent + i.strip() + '\n'
@@ -37,20 +37,20 @@ def display_or_disable(state):
     for key, handlers in tuple(R.handlers.items()):
         R.handlers[key] = [(priority, index, fct)
                            for priority, index, fct in handlers
-                           if fct.__module__ != fcty
+                           if fct.__module__.split('.')[-1] != fcty
                           ]
     R.update_handlers()
     R('AFTER_DISABLE', functionality=fcty)
     return '[[[disabled]]] ' + fcty
 
 @R.handler('help', 'C9')
-def print_help(state):
+def _help(state):
     "help"
     state.help.append('  df : [[[disable_functionnality_help]]]')
     state.help.append('  pf : [[[dump_f]]]')
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     state.translations['en']['disable_functionnality_help'] = "Disable the named functionality"
     state.translations['fr']['disable_functionnality_help'] = "Désactive la fonctionnalité indiquée"

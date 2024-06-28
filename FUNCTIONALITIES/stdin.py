@@ -11,7 +11,7 @@ from reactor import R
 
 @R.handler('START')
 @R.handler('AFTER_RELOAD')
-def _start(state):
+def start(state):
     """Start the stdin reader"""
     if getattr(state, 'functionality', __name__) != __name__:
         return
@@ -25,12 +25,12 @@ def _start(state):
     R('start_thread', function=stdin_reader)
 
 @R.handler('print')
-def _print(state):
+def prints(state):
     """Print on stdout or the given file"""
     print(state.string, file=getattr(state, 'wfile', sys.stdout))
 
 @R.handler('timer')
-def _timer(_state):
+def timer(_state):
     """Action on timer event"""
     time = R.M.variables.get("T", 0)
     if time:
@@ -42,7 +42,7 @@ def syntax_error(state):
     return f"[[[stdin_error]]] «{state.command}»"
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     state.translations['en']['stdin_error'] = "SYNTAX ERROR"
     state.translations['fr']['stdin_error'] = "ERREUR DE SYNTAXE"

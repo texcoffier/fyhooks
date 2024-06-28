@@ -23,14 +23,14 @@ def do_dump(state):
     return None
 
 @R.handler('help', 'C2')
-def print_help(state):
+def _help(state):
     "help"
     state.help.append('  pm : [[[dump_m]]]')
     state.help.append('  ph : [[[dump_h]]]')
     state.help.append('  pr : [[[dump_r]]]')
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     state.translations['en']['dump_m'] = "Application memory dump"
     state.translations['fr']['dump_m'] = "Liste des structures de données de l'application"

@@ -20,17 +20,17 @@ def start(state):
     R('start_thread', function=timer)
 
 @R.handler('timer')
-def _timer(_state):
+def timer(_state):
     """Incremente T variable on each timer event"""
     R.M.variables['T'] = R.M.variables.get('T', 0) + 1
 
 @R.handler('help', 'X')
-def print_help(state):
+def _help(state):
     "help"
     state.help.append('[[[timer_help]]]')
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     # pylint: disable=line-too-long
     state.translations['en']['timer_help'] = "A timer will display a message every 10 seconds"

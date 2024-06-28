@@ -24,16 +24,16 @@ def translate(state):
     state.string = re.sub(r'\[\[\[([^]]*)]]]', replace, str(state.string))
 
 @R.handler('PRESTART')
-def _start(_state):
+def start(_state):
     R.M.variables['LANG'] = 'fr'
     R('translations', translations=TRANSLATIONS)
 
 @R.handler('help', 'S')
-def print_help(state):
+def _help(state):
     """Help message"""
     state.help.append("[[[translations_help]]]")
 @R.handler('help', 'C2')
-def print_help2(state):
+def _help2(state):
     "help"
     state.help.append('  pt : [[[dump_t]]]')
 
@@ -43,7 +43,7 @@ def reload(_state):
     R('translations', translations=TRANSLATIONS)
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     # pylint: disable=line-too-long
     state.translations['en']['translations_help'] = "To see messages in french, type: LANG='fr'"

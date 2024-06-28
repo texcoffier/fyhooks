@@ -11,6 +11,8 @@ from reactor import R
 
 R.description('BEFORE_RELOAD',
     'Arguments: state.functionnality\nEvent send just before reloading the functionnality')
+R.description('AFTER_RELOAD',
+    'Arguments: state.functionnality\nEvent send just after reloading the functionnality')
 
 @R.handler('eval')
 def do_reload(state):
@@ -44,12 +46,12 @@ def do_reload(state):
                                    if must_reload)
 
 @R.handler('help', 'C3')
-def print_help(state):
+def _help(state):
     "help"
     state.help.append('  r : [[[reload_help]]]')
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     state.translations['en']['reload_help'] = "Reload modified Python modules"
     state.translations['fr']['reload_help'] = "Réactualise les modules Python qui ont été modifiés"

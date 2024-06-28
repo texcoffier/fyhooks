@@ -16,12 +16,12 @@ def get_help(state):
     return None
 
 @R.handler('help', 'C')
-def print_help(state):
+def _help(state):
     "help"
     state.help.append('  h : [[[help_help]]]')
 
 @R.handler('translations')
-def translations(state):
+def _translations(state):
     "Translations"
     state.translations['en']['help_help'] = "Print this help"
     state.translations['fr']['help_help'] = "Affiche ce message d'aide"
