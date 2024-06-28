@@ -24,7 +24,8 @@ def start(state):
     class HTTPServer(http.server.HTTPServer):
         """Do not close connection automaticaly"""
         old_shutdown_request = http.server.HTTPServer.shutdown_request
-        def shutdown_request(self, request):
+        def shutdown_request(self, _request):
+            """Do not close connection automaticaly"""
             return
 
     finish = http.server.BaseHTTPRequestHandler.finish

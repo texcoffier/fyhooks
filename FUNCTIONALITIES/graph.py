@@ -21,6 +21,7 @@ def _counter(state):
     ARCS[origin, state.event] += 1
 
 def get_svg():
+    """Return the SVG computed from system state"""
     def node_id(txt):
         return txt.split('.')[-1]
     def nice(txt):
@@ -81,6 +82,7 @@ def http(state):
         state.server.send_header('Content-Type', 'image/svg+xml; charset=UTF-8')
         return True
     state.server.svg = "[[[graphviz]]]"
+    return None
 
 @R.handler('help', 'C')
 def _help(state):
@@ -92,8 +94,10 @@ def _translations(state):
     "Translations"
     state.translations['en']['help_graph'] = "Display call graph"
     state.translations['fr']['help_graph'] = "Affiche le graphe d'appel"
-    state.translations['en']['graphviz'] = "To see the call graph: [[[BR]]][[[TT]]]apt install graphviz[[[/TT]]]"
-    state.translations['fr']['graphviz'] = "Pour voir le graphe d'appel : [[[BR]]][[[TT]]]apt install graphviz[[[/TT]]]"
+    state.translations['en']['graphviz'] = \
+        "To see the call graph: [[[BR]]][[[TT]]]apt install graphviz[[[/TT]]]"
+    state.translations['fr']['graphviz'] = \
+        "Pour voir le graphe d'appel : [[[BR]]][[[TT]]]apt install graphviz[[[/TT]]]"
 
 @R.handler('home_page')
 def home_graph(state):

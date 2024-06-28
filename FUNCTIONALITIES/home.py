@@ -22,6 +22,39 @@ def http(state):
         return True
     return None
 
+class Item:
+    """A bloc of the HTML interface"""
+    index = 0
+    def __init__(self, item):
+        for attribute in item:
+            assert attribute in ('column', 'row', 'js', 'src', 'attributes', 'css', 'html')
+        self.item = item
+        self.i = self.index
+        Item.index += 1
+    def column(self):
+        """Get HTML column name"""
+        return self.item.get('column', '')
+    def row(self):
+        """Get HTML row name"""
+        return self.item.get('row', '')
+    def javascript(self):
+        """Get Javascript helper function"""
+        return self.item.get('js', '')
+    def css(self):
+        """Get CSS functionality style"""
+        return self.item.get('css', '').replace('<.>',
+            f'BODY > DIV > DIV.{self.column()} > DIV.{self.row()}')
+    def html(self):
+        """Get the HTML for the bloc"""
+        src = self.item.get('src', '')
+        attributes = self.item.get('attributes', '')
+        content = f'<DIV class="{self.row()}" id="i{self.i}" src="{src}" {attributes}>'
+        content += self.item.get('html', '')
+        if src:
+            content += f'<SCRIPT>load_data(document.getElementById("i{self.i}"))</SCRIPT>'
+        content += '</DIV>'
+        return content
+
 @R.handler('eval')
 def home(state):
     """Home page"""
@@ -29,72 +62,65 @@ def home(state):
         return None
     items = []
     R('home_page', items=items)
-    css = ['''
-    BODY { margin: 0px; overflow: hidden }
-    BODY > DIV { display: flex; }
-    BODY > DIV > DIV { display: inline-block; overflow: auto; vertical-align: top }
-    BODY > DIV > DIV > DIV { position: relative }
-    BODY > DIV > DIV > DIV > H2 { margin: 2px }
-    ''']
-    js_function = ['''
-    function load_data(div) {
-        var url = div.getAttribute('src');
-        if ( ! url )
-            return;
-        console.log("Reload " + url);
-        var xhr = div.xhr;
-        if (!xhr)
-            xhr = new XMLHttpRequest();
-        div.xhr = xhr;
-        xhr.addEventListener('readystatechange',
-            function(event) {
-                if (event.target.readyState < 3)
-                    return;
-                if ( event.target.responseText.indexOf('[[[RELOAD_HOME]]]') != -1 ) {
-                    window.location.reload();
-                    }
-                console.log("Receive " + event.target.responseText.length
-                    + " bytes for " + url);
-                if(event.target.responseText.substr(0, 1) == '<') {
-                    div.innerHTML = event.target.responseText;
-                    return;
-                }
-                var content = event.target.responseText
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/\\[\\[\\[/g, '<')
-                    .replace(/\\]\\]\\]/g, '>')
-                    .split('\\n')
-                    ;
-                div.innerHTML = '<H2>' + content[0] + '</H2>' + content.slice(1).join('\\n');
-                })
-        xhr.open("GET", url);
-        xhr.send();
-        }''']
 
     columns = collections.defaultdict(dict)
-    for i, item in enumerate(items):
-        column = item.get('column', '')
-        row = item.get('row', '')
-        css.append(item.get('css', '').replace('<.>', f'BODY > DIV > DIV.{column} > DIV.{row}'))
-        js_function.append(item.get('js', ''))
-        html = item.get('html', '')
-        attributes = item.get('attributes', '')
-        src = item.get('src', '')
-        if src:
-            html += f'<SCRIPT>load_data(document.getElementById("i{i}"))</SCRIPT>'
-        columns[column][row] = (html, i, src, attributes)
-    content = ['<STYLE>', ''.join(css), '</STYLE>',
-               '<SCRIPT>', '\n'.join(js_function), '</SCRIPT>',
-               '<DIV>'
-               ]
+    items = [Item(item) for item in items]
+    for item in items:
+        columns[item.column()][item.row()] = item
+
+    content = [
+        '<STYLE>',
+        'BODY { margin: 0px; overflow: hidden }',
+        'BODY > DIV { display: flex; }',
+        'BODY > DIV > DIV { display: inline-block; overflow: auto; vertical-align: top }',
+        'BODY > DIV > DIV > DIV { position: relative }',
+        'BODY > DIV > DIV > DIV > H2 { margin: 2px }',
+        ''.join(item.css() for item in items),
+        '</STYLE>',
+        '<SCRIPT>', '''
+        function load_data(div) {
+            var url = div.getAttribute('src');
+            if ( ! url )
+                return;
+            console.log("Reload " + url);
+            var xhr = div.xhr;
+            if (!xhr)
+                xhr = new XMLHttpRequest();
+            div.xhr = xhr;
+            xhr.addEventListener('readystatechange',
+                function(event) {
+                    if (event.target.readyState < 3)
+                        return;
+                    if ( event.target.responseText.indexOf('[[[RELOAD_HOME]]]') != -1 ) {
+                        window.location.reload();
+                        }
+                    console.log("Receive " + event.target.responseText.length
+                        + " bytes for " + url);
+                    if(event.target.responseText.substr(0, 1) == '<') {
+                        div.innerHTML = event.target.responseText;
+                        return;
+                    }
+                    var content = event.target.responseText
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/\\[\\[\\[/g, '<')
+                        .replace(/\\]\\]\\]/g, '>')
+                        .split('\\n')
+                        ;
+                    div.innerHTML = '<H2>' + content[0] + '</H2>' + content.slice(1).join('\\n');
+                    })
+            xhr.open("GET", url);
+            xhr.send();
+        }''',
+        '\n'.join(item.javascript() for item in items),
+        '</SCRIPT>',
+        '<DIV>'
+        ]
     for column_class, cells in sorted(columns.items()):
         content.append(f'<DIV class="{column_class}">')
-        for cell_class, (html, i, src, attributes) in sorted(cells.items()):
-            content.append(f'<DIV class="{cell_class}" id="i{i}" src="{src}" {attributes}>')
-            content.append(html)
-            content.append('</DIV>')
+        for _cell_class, item in sorted(cells.items()):
+            content.append(item.html())
         content.append('</DIV>')
     content.append('</DIV><DIV>')
     return ''.join(content)

@@ -13,11 +13,11 @@ def start(state):
     """Start a timer thread"""
     if getattr(state, 'functionality', __name__) != __name__:
         return
-    def timer(running):
+    def timer_thread(running):
         while running:
             R('timer')
             time.sleep(10)
-    R('start_thread', function=timer)
+    R('start_thread', function=timer_thread)
 
 @R.handler('timer')
 def timer(_state):

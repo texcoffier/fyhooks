@@ -41,12 +41,12 @@ class Reactor:
         handlers = self.handlers[event_type]
         # Reactor.priority is here only to never compare 2 handler (sorting will fail)
         handlers.append((priority, Reactor.priority, handler))
-        Reactor.priority += 1            
+        Reactor.priority += 1
 
         # Apply previously defined generic handlers
-        for handler, priority in self.generic_handler:
-            handlers.append((priority, Reactor.priority, handler))
-            Reactor.priority += 1            
+        for the_handler, the_priority in self.generic_handler:
+            handlers.append((the_priority, Reactor.priority, the_handler))
+            Reactor.priority += 1
 
         handlers.sort()
         self.sorted_handlers[event_type] = [handler[2] for handler in handlers]

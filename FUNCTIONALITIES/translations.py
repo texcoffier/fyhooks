@@ -25,6 +25,7 @@ def translate(state):
 
 @R.handler('PRESTART')
 def start(_state):
+    """The translation must be defined before everything"""
     R.M.variables['LANG'] = 'fr'
     R('translations', translations=TRANSLATIONS)
 

@@ -89,7 +89,7 @@ of the running application.
 
 Legend:
 
-   * Cylinder: a file, each one define a functionality.
+   * Cylinder: a file, each one defines a functionality.
 
    * Rectangle: an event type
 
@@ -101,7 +101,8 @@ Legend:
 
 Some arcs are not displayed for clarity : `_help` `_translations` `_counter` `_record`
 in fact all the function names starting by `_`.
-All the functionalities receive `translations events.
+All the functionalities receive `translations` events,
+it is really not useful to display it.
 
 ## Documentation
 
