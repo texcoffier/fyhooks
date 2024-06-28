@@ -45,7 +45,11 @@ class Reactor:
 
         # Apply previously defined generic handlers
         for the_handler, the_priority in self.generic_handler:
-            handlers.append((the_priority, Reactor.priority, the_handler))
+            for an_handler in handlers:
+                if an_handler[2] is the_handler:
+                    break # generic handler yet defined
+            else:
+                handlers.append((the_priority, Reactor.priority, the_handler))
             Reactor.priority += 1
 
         handlers.sort()
