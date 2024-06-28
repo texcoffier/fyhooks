@@ -42,12 +42,12 @@ def get_svg():
                         for (origin, goal), nbr in ARCS.items()
                         if origin not in HIDE and goal not in HIDE
                         )
-    arcs_out = '\n'.join(f'{key} -> {fct.__module__} [ tooltip="{fct.__name__}"]'
+    arcs_out = '\n'.join(f'{key} -> {fct.__module__} [ label="{fct.__name__}"]'
                          for key, handlers in tuple(R.handlers.items())
                          for priority, index, fct in handlers
                          if key not in HIDE and fct.__module__ not in HIDE
                         )
-    dot = 'digraph {\n' + fcties + '\n' + handlers + '\n' + arcs_in + '\n' + arcs_out + '\n}'
+    dot = 'digraph {edge [fontname="Helvetica"]\n' + fcties + '\n' + handlers + '\n' + arcs_in + '\n' + arcs_out + '\n}'
     with open("xxx.dot", "w", encoding='utf-8') as file:
         file.write(dot)
     os.system("dot -Tsvg xxx.dot >xxx.svg")
