@@ -4,31 +4,34 @@ Implement a chat.
 import sys
 from reactor import R
 
-FILES = []
+@R.handler('START')
+def init(_state):
+    """Create the list of chat receivers"""
+    R.M.FILES = []
 
 @R.handler('eval')
 def start_chat(state):
     """Start chat"""
     if state.command == 'chat':
         server = getattr(state, 'server', None)
-        if state.wfile in FILES:
-            FILES.remove(state.wfile)
+        if state.wfile in R.M.FILES:
+            R.M.FILES.remove(state.wfile)
             return '[[[chat_stop]]]'
-        FILES.append(state.wfile)
+        R.M.FILES.append(state.wfile)
         if server:
             server.do_not_close = True
         return '[[[chat]]]'
     if state.command.startswith('/'):
         msg = state.command[1:]
-        for wfile in tuple(FILES):
+        for wfile in tuple(R.M.FILES):
             if wfile is sys.stdout:
                 R('print', string='[[[chat_message]]] ' + msg, wfile=wfile)
             else:
                 try:
                     wfile.write(msg + '[[[br]]]')
                 except BrokenPipeError:
-                    FILES.remove(wfile)
-        return f'[[[message_sent]]] {len(FILES)} [[[/message_sent]]]'
+                    R.M.FILES.remove(wfile)
+        return f'[[[message_sent]]] {len(R.M.FILES)} [[[/message_sent]]]'
     return None
 
 @R.handler('help', 'C2')
@@ -59,11 +62,3 @@ def home_log(state):
     state.items.append(
         {'column': 'C6', 'row': 'R0', 'html': 'CHAT', 'src': '/chat',
          'css': '<.> { font-family:monospace, monospace; white-space: pre; background: #8F8}'})
-
-@R.handler('BEFORE_RELOAD')
-def chat_reloaded(state):
-    """Reload the web page if the chat module is reloaded"""
-    if state.functionality == __name__:
-        for wfile in FILES:
-            if wfile is not sys.stdout:
-                wfile.write('[[[RELOAD_HOME]]]')
