@@ -129,7 +129,7 @@ answer = R('event-type', attr1=value, attr2=value...)
 #          or the data returned by the last event handler called
 ```
 
-Add a new event receiver, handlers are called by priority (Abricot before Zombi).
+Add a new event receiver, handlers are called by priority (Apricot before Zombi).
 The state is created clean from the attribute values defined when calling
 and the handlers may change the attribute values or add new ones.
 The caller can define any attributes, they are not checked.

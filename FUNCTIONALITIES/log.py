@@ -14,7 +14,10 @@ def start(output):
         i = len(history)
         while running:
             while i < len(history):
-                R("print", string=history[i], wfile=output)
+                try:
+                    R("print", string=history[i], wfile=output)
+                except BrokenPipeError:
+                    return # Socket closed
                 i += 1
             output.flush()
             time.sleep(0.1)

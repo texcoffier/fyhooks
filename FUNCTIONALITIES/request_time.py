@@ -21,7 +21,7 @@ def stop_timer(state):
             {1000*(time.time() - server.start_time):.1f}ms[[[/DIV]]]'''
 
 @R.handler('buttons', 'Y')
-def reload(state):
+def disable(state):
     """Add button to disable the request time display"""
     state.buttons.append(('/df request_time', '[[[hide_request_time]]]'))
 
